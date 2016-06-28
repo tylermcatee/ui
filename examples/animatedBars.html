@@ -1,13 +1,7 @@
 <body>
 </body>
 
-<!-- <script src="../ui.js"></script> -->
-<script src="../utilities/float.js"></script>
-<script src="../utilities/color.js"></script>
-<script src="../views/view.js"></script>
-<script src="../controllers/viewcontroller.js"></script>
-<script src="../views/window.js"></script>
-<script src="../animation/animation.js"></script>
+<script src="../ui.js"></script>
 
 <script>
 
@@ -57,7 +51,6 @@ class AnimatedBarsViewController extends ViewController {
     }
 
     windowDidResize() {
-        this.view.height = this.view.height;
         for (var i = 0; i < TOTAL_BARS; i++) {
             var view = this.barViews[i];
             this.layoutBarViewForIndex(i, view);

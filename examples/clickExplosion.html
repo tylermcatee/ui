@@ -5,10 +5,6 @@
 
 <script>
 
-    TOTAL_WIDTH = document.body.clientWidth;
-    TOTAL_HEIGHT = document.body.clientHeight;
-    TOTAL_BARS = 25;
-
     class AnimatedBarsViewController extends ViewController {
         viewDidLoad() {
             super.viewDidLoad();
@@ -25,7 +21,7 @@
         explodeAtPoint(x, y) {
             var range = 2;
             var separation = 5;
-            for (var x1 = 1 - range; x1 < range ; x1++) {
+            for (var x1 = 1 - range; x1 < range; x1++) {
                 for (var y1 = 1 - range; y1 < range; y1++) {
                     if (y1 || x1) {
                         var xPos = x1 * separation + x;
@@ -46,13 +42,13 @@
         }
 
         makeViewFlyAway(view, xDir, yDir) {
-            Animation.animate(view, 3, function(view) {
+            Animation.animate(view, 3, function (view) {
                 var x = xDir * document.body.clientWidth;
                 var y = yDir * document.body.clientWidth;
                 view.setBackgroundColor(randColor());
                 view.setX(x);
                 view.setY(y);
-            }, function() {
+            }, function () {
                 view.removeFromSuperview();
             });
         }
