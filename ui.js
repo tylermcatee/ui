@@ -40,12 +40,14 @@ setBorderRadius(radius){this.borderRadius=radius;this.view.style.borderRadius=ra
 setOpacity(opacity){this.opacity=opacity;this.view.style.opacity=opacity;}
 calculateLeft(){return this.x+this.transform.x;}
 calculateTop(){return this.y+this.transform.y;}}
-KEYFRAME_KEY=0;KEYFRAME_FROM=1;KEYFRAME_TO=2;class Animation{static animate(view,duration,updateCallback){Animation.animateWithCompletion(view,duration,updateCallback,null);}
-static animate(view,duration,updateCallback,completion){var mutatableView=view.copy();updateCallback(mutatableView);var keyframes=Animation._keyframes(view,mutatableView);if(keyframes.length==0){console.log("Animation: No keyframes detected.");return;}
-var startTime=Date.now();var finishTime=startTime+duration*1000.0;function update(){var currentTime=Date.now();var percent=fpercent(startTime,currentTime,finishTime);if(fgreater(percent,1.0)){for(var i=0;i<keyframes.length;i++){var keyframe=keyframes[i];view.setKeyValue(keyframe[0],keyframe[2]);}
+KEYFRAME_KEY=0;KEYFRAME_FROM=1;KEYFRAME_TO=2;Easing={linear:function(t){return t},easeInQuad:function(t){return t*t},easeOutQuad:function(t){return t*(2-t)},easeInOutQuad:function(t){return t<.5?2*t*t:-1+(4-2*t)*t},easeInCubic:function(t){return t*t*t},easeOutCubic:function(t){return(--t)*t*t+1},easeInOutCubic:function(t){return t<.5?4*t*t*t:(t-1)*(2*t-2)*(2*t-2)+1},easeInQuart:function(t){return t*t*t*t},easeOutQuart:function(t){return 1-(--t)*t*t*t},easeInOutQuart:function(t){return t<.5?8*t*t*t*t:1-8*(--t)*t*t*t},easeInQuint:function(t){return t*t*t*t*t},easeOutQuint:function(t){return 1+(--t)*t*t*t*t},easeInOutQuint:function(t){return t<.5?16*t*t*t*t*t:1+16*(--t)*t*t*t*t}}
+class Animation{static animate(view,duration,updateCallback,completion,curve,delay){if(delay==null){delay=0.0;}
+if(curve==null){curve=Easing.linear;}
+var mutatableView=view.copy();updateCallback(mutatableView);var keyframes=Animation._keyframes(view,mutatableView);if(keyframes.length==0){console.log("Animation: No keyframes detected.");return;}
+var startTime=Date.now();var finishTime=startTime+duration*1000.0;function update(){var currentTime=Date.now();var percent=fpercent(startTime,currentTime,finishTime);var timeValue=curve(percent);if(fgreater(timeValue,1.0)){for(var i=0;i<keyframes.length;i++){var keyframe=keyframes[i];view.setKeyValue(keyframe[0],keyframe[2]);}
 if(completion!=null){completion();}
 return;}
-requestAnimationFrame(update);for(var i=0;i<keyframes.length;i++){var keyframe=keyframes[i];var interpolatingFunction=Animation._interpolatingFunctionForKey(keyframe[0]);var interpolatedPosition=interpolatingFunction(keyframe[KEYFRAME_FROM],keyframe[KEYFRAME_TO],percent);view.setKeyValue(keyframe[KEYFRAME_KEY],interpolatedPosition);}}
+requestAnimationFrame(update);for(var i=0;i<keyframes.length;i++){var keyframe=keyframes[i];var interpolatingFunction=Animation._interpolatingFunctionForKey(keyframe[0]);var interpolatedPosition=interpolatingFunction(keyframe[KEYFRAME_FROM],keyframe[KEYFRAME_TO],timeValue);view.setKeyValue(keyframe[KEYFRAME_KEY],interpolatedPosition);}}
 requestAnimationFrame(update);}
 static _interpolatingFunctionForKey(key){switch(key){case'backgroundColor':return interpolatedColor;break;case'transform':return interpolatedTransform;break;default:return flerp;break;}}
 static _keyframes(oldView,newView){var keys=['transform','x','y','width','height','backgroundColor','borderRadius','opacity'];var keyframes=[];for(var i=0;i<keys.length;i++){var key=keys[i];var oldValue=oldView[key];var newValue=newView[key];if(!fequal(oldValue,newValue)){keyframes.push([key,oldValue,newValue]);}}

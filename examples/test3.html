@@ -22,10 +22,10 @@ class MainViewController extends ViewController {
 	viewDidAppear() {
 		super.viewDidAppear();
 
-		Animation.animate(this.alertBox, 0.55, function(view) {
+		Animation.animate(this.alertBox, 0.75, function(view) {
 			view.setOpacity(1.0);
 			view.setTransform(Transform.identity());
-		});
+		}, null /* completion */, Easing.easeOutCubic);
 	}
 
 	layoutAlertBox() {

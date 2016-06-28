@@ -10,12 +10,44 @@ KEYFRAME_KEY = 0;
 KEYFRAME_FROM = 1;
 KEYFRAME_TO = 2;
 
-class Animation {
-	static animate(view, duration, updateCallback) {
-		Animation.animateWithCompletion(view, duration, updateCallback, null);
-	}
+Easing = {
+  // no easing, no acceleration
+  linear: function (t) { return t },
+  // accelerating from zero velocity
+  easeInQuad: function (t) { return t*t },
+  // decelerating to zero velocity
+  easeOutQuad: function (t) { return t*(2-t) },
+  // acceleration until halfway, then deceleration
+  easeInOutQuad: function (t) { return t<.5 ? 2*t*t : -1+(4-2*t)*t },
+  // accelerating from zero velocity 
+  easeInCubic: function (t) { return t*t*t },
+  // decelerating to zero velocity 
+  easeOutCubic: function (t) { return (--t)*t*t+1 },
+  // acceleration until halfway, then deceleration 
+  easeInOutCubic: function (t) { return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1 },
+  // accelerating from zero velocity 
+  easeInQuart: function (t) { return t*t*t*t },
+  // decelerating to zero velocity 
+  easeOutQuart: function (t) { return 1-(--t)*t*t*t },
+  // acceleration until halfway, then deceleration
+  easeInOutQuart: function (t) { return t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t },
+  // accelerating from zero velocity
+  easeInQuint: function (t) { return t*t*t*t*t },
+  // decelerating to zero velocity
+  easeOutQuint: function (t) { return 1+(--t)*t*t*t*t },
+  // acceleration until halfway, then deceleration 
+  easeInOutQuint: function (t) { return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t }
+}
 
-	static animate(view, duration, updateCallback, completion) {
+class Animation {
+
+	static animate(view, duration, updateCallback, completion, curve, delay) {
+		if (delay == null) {
+			delay = 0.0;
+		}
+		if (curve == null) {
+			curve = Easing.linear;
+		}
 		var mutatableView = view.copy();
 		updateCallback(mutatableView);
 
@@ -31,7 +63,8 @@ class Animation {
 		function update() {
 			var currentTime = Date.now();
 			var percent = fpercent(startTime, currentTime, finishTime);
-			if (fgreater(percent, 1.0)) {
+			var timeValue = curve(percent);
+			if (fgreater(timeValue, 1.0)) {
 				// Finished animating
 				for (var i = 0; i < keyframes.length; i++) {
 					var keyframe = keyframes[i];
@@ -48,7 +81,7 @@ class Animation {
 			for (var i = 0; i < keyframes.length; i++) {
 				var keyframe = keyframes[i];
 				var interpolatingFunction = Animation._interpolatingFunctionForKey(keyframe[0]);
-				var interpolatedPosition = interpolatingFunction(keyframe[KEYFRAME_FROM], keyframe[KEYFRAME_TO], percent);
+				var interpolatedPosition = interpolatingFunction(keyframe[KEYFRAME_FROM], keyframe[KEYFRAME_TO], timeValue);
 				view.setKeyValue(keyframe[KEYFRAME_KEY], interpolatedPosition);
 			}
 		}
