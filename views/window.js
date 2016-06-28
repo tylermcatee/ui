@@ -18,12 +18,13 @@ class Window {
 		this.rootViewController.view.setHeight(document.body.clientHeight);
 		this.rootViewController.view.setX(0.0);
 		this.rootViewController.view.setY(0.0);
+		this.rootViewController.windowDidResize();
 	}
 
 	setRootViewController(viewController) {
 		viewController.view.embedIn(this.containee);
 		this.rootViewController = viewController;
-		addEventListener('resize', this.layoutContainee.bind(this));
+		window.addEventListener("resize", this.layoutContainee.bind(this));
 		this.layoutContainee();
 	}
 }
