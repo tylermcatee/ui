@@ -15,14 +15,16 @@ class MainViewController extends ViewController {
 		this.alertBox = View.viewWithFrame(0.0, 0.0, 0.0, 0.0);
 		this.alertBox.setBackgroundColor('#161618');
 		this.alertBox.setOpacity(0.0);
+		this.alertBox.setTransform(Transform.scalar(0.0, 50.0));
 		this.view.addSubview(this.alertBox);
 	}
 
 	viewDidAppear() {
 		super.viewDidAppear();
 
-		Animation.animate(this.alertBox, 0.8, function(view) {
+		Animation.animate(this.alertBox, 0.55, function(view) {
 			view.setOpacity(1.0);
+			view.setTransform(Transform.identity());
 		});
 	}
 

@@ -60,6 +60,9 @@ class Animation {
 			case 'backgroundColor':
 				return interpolatedColor;
 				break;
+			case 'transform':
+				return interpolatedTransform;
+				break;
 			default:
 				return flerp;
 				break;
@@ -67,7 +70,7 @@ class Animation {
 	}
 
 	static _keyframes(oldView, newView) {
-		var keys = ['x', 'y', 'width', 'height', 'backgroundColor', 'borderRadius', 'opacity'];
+		var keys = ['transform', 'x', 'y', 'width', 'height', 'backgroundColor', 'borderRadius', 'opacity'];
 		var keyframes = [];
 		for (var i = 0; i < keys.length; i++) {
 			var key = keys[i];

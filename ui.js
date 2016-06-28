@@ -16,7 +16,8 @@ function flerp(min,max,percent){return percent*(max-min)+min;}
 function fgreater(a,b){return(a-b)>FLOAT_EPISLON;}
 class Transform{constructor(){this.x=0;this.y=0;}
 static identity(){return new Transform();}
-static scalar(x,y){var transform=new Transform();transform.x=x;transform.y=y;}}
+static scalar(x,y){var transform=new Transform();transform.x=x;transform.y=y;return transform;}}
+function interpolatedTransform(min,max,percent){var x=flerp(min.x,max.x,percent);var y=flerp(min.y,max.y,percent);var transform=new Transform();transform.x=x;transform.y=y;return transform;}
 class View{static viewWithFrame(x,y,width,height){var newView=new View();newView.init();newView.setX(x);newView.setY(y);newView.setWidth(width);newView.setHeight(height);return newView;}
 init(){this.view=document.createElement('div');this.view.id=Date.now();this.setTransform(Transform.identity());this.setPosition('absolute');this.setX(0.0);this.setY(0.0);this.setWidth(0.0);this.setHeight(0.0);this.setBackgroundColor('');this.setBorderRadius(0.0);this.setOpacity(1.0);addEventListener('resize',this.layoutSubviews);this.eventListeners={};}
 copy(){var copyView=View.viewWithFrame(this.x,this.y,this.width,this.height);copyView.setBackgroundColor(this.backgroundColor);copyView.setBorderRadius(this.borderRadius);copyView.setOpacity(this.opacity);return copyView;}
@@ -27,7 +28,7 @@ layoutSubviews(){}
 addEventHandler(eventHandler){if(this.eventListeners[eventHandler.eventName]==null){this.eventListeners[eventHandler.eventName]=eventHandler;}else{console.log.error("Need to add support for handling collision of eventHanlders, and removing them.");}
 eventHandler.target=this;this.view.addEventListener(eventHandler.eventName,this.callbackEventHandler.bind(this));}
 callbackEventHandler(event){var eventHandler=this.eventListeners[event.type];eventHandler.performAction(event);event.stopPropagation();}
-setKeyValue(key,value){switch(key){case'position':this.setPosition(value);break;case'x':this.setX(value);break;case'y':this.setY(value);break;case'width':this.setWidth(value);break;case'height':this.setHeight(value);break;case'backgroundColor':this.setBackgroundColor(value);break;case'borderRadius':this.setBorderRadius(value);break;case'opacity':this.setOpacity(value);break;default:console.error("View: setKeyValue not implemented for key "+key);break;}}
+setKeyValue(key,value){switch(key){case'transform':this.setTransform(value);break;case'position':this.setPosition(value);break;case'x':this.setX(value);break;case'y':this.setY(value);break;case'width':this.setWidth(value);break;case'height':this.setHeight(value);break;case'backgroundColor':this.setBackgroundColor(value);break;case'borderRadius':this.setBorderRadius(value);break;case'opacity':this.setOpacity(value);break;default:console.error("View: setKeyValue not implemented for key "+key);break;}}
 setTransform(transform){this.transform=transform;this.view.style.left=this.calculateLeft();this.view.style.top=this.calculateTop();}
 setPosition(position){this.position=position;this.view.style.position=position;}
 setX(x){this.x=x;this.view.style.left=this.calculateLeft();}
@@ -46,8 +47,8 @@ if(completion!=null){completion();}
 return;}
 requestAnimationFrame(update);for(var i=0;i<keyframes.length;i++){var keyframe=keyframes[i];var interpolatingFunction=Animation._interpolatingFunctionForKey(keyframe[0]);var interpolatedPosition=interpolatingFunction(keyframe[KEYFRAME_FROM],keyframe[KEYFRAME_TO],percent);view.setKeyValue(keyframe[KEYFRAME_KEY],interpolatedPosition);}}
 requestAnimationFrame(update);}
-static _interpolatingFunctionForKey(key){switch(key){case'backgroundColor':return interpolatedColor;break;default:return flerp;break;}}
-static _keyframes(oldView,newView){var keys=['x','y','width','height','backgroundColor','borderRadius','opacity'];var keyframes=[];for(var i=0;i<keys.length;i++){var key=keys[i];var oldValue=oldView[key];var newValue=newView[key];if(!fequal(oldValue,newValue)){keyframes.push([key,oldValue,newValue]);}}
+static _interpolatingFunctionForKey(key){switch(key){case'backgroundColor':return interpolatedColor;break;case'transform':return interpolatedTransform;break;default:return flerp;break;}}
+static _keyframes(oldView,newView){var keys=['transform','x','y','width','height','backgroundColor','borderRadius','opacity'];var keyframes=[];for(var i=0;i<keys.length;i++){var key=keys[i];var oldValue=oldView[key];var newValue=newView[key];if(!fequal(oldValue,newValue)){keyframes.push([key,oldValue,newValue]);}}
 return keyframes;}}
 class ViewController{constructor(){this.view=this.loadView();this.viewDidLoad();}
 loadView(){return View.viewWithFrame(0,0,0,0);}

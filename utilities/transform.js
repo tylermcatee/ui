@@ -12,5 +12,15 @@ class Transform {
 		var transform = new Transform();
 		transform.x = x;
 		transform.y = y;
+		return transform;
 	}
+}
+
+function interpolatedTransform(min, max, percent) {
+	var x = flerp(min.x, max.x, percent);
+	var y = flerp(min.y, max.y, percent);
+	var transform = new Transform();
+	transform.x = x;
+	transform.y = y;
+	return transform;
 }

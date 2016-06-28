@@ -95,6 +95,9 @@ class View {
 		// TODO: Clean this up, it sucks
 		// Also are animations broken for non simply mapped values?
 		switch(key) {
+			case 'transform':
+				this.setTransform(value);
+				break;
 			case 'position':
 				this.setPosition(value);
 				break;
