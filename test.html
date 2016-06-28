@@ -8,17 +8,29 @@
 
 <script>
 
-var view = new View(50.0, 50.0, 100.0, 100.0);
+var view = View.viewWithFrame(50.0, 50.0, 100.0, 100.0);
 view.setBorderRadius(20.0);
 view.setBackgroundColor('red');
 view.embedIn(document.body);
 
 Animation.animate(view, 1.0, function(view) {
-	// view.setOpacity(0.0);
+	view.setOpacity(0.0);
 	view.setX(100.0);
 	view.setY(100.0);
 	view.setBorderRadius(0.0);
 	return view;
+});
+
+var imageView = ImageView.imageViewWithFrame(100.0, 100.0, 100.0, 100.0);
+imageView.setImage('cat.jpg');
+imageView.embedIn(document.body);
+imageView.setOpacity(0.0);
+
+
+Animation.animate(imageView, 2.0, function(view) {
+	view.setOpacity(1.0);
+	view.setWidth(300.0);
+	view.setHeight(300.0);
 });
 
 </script>

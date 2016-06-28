@@ -1,19 +1,37 @@
 class View {
-	constructor(x, y, width, height) {
+
+	//
+	// Constructors
+	//
+
+	static viewWithFrame(x, y, width, height) {
+		var newView = new View();
+		newView.init();
+		newView.setX(x);
+		newView.setY(y);
+		newView.setWidth(width);
+		newView.setHeight(height);
+		return newView;
+	}
+
+	// 
+	// Internal init
+	//
+
+	init() {
 		this.view = document.createElement('div');
+		this.view.id = Date.now();
 
 		this.setPosition('absolute');
-		this.setX(x);
-		this.setY(y);
-		this.setWidth(width);
-		this.setHeight(height);
+		this.setX(0.0);
+		this.setY(0.0);
+		this.setWidth(0.0);
+		this.setHeight(0.0);
 		this.setBackgroundColor('');
 		this.setBorderRadius(0.0);
 		this.setOpacity(1.0);
 
 		addEventListener('resize', this.layoutSubviews);
-
-		this._constructor(x, y, width, height);
 	}
 
 	// 
@@ -22,7 +40,7 @@ class View {
 
 	copy() {
 		// This sets position, x, y, width, height
-		var copyView = new View(this.x, this.y, this.width, this.height);
+		var copyView = View.viewWithFrame(this.x, this.y, this.width, this.height);
 		// Copy the rest of the parameters
 		copyView.setBackgroundColor(this.backgroundColor);
 		copyView.setBorderRadius(this.borderRadius);
@@ -40,10 +58,6 @@ class View {
 
 	removeFromSuperview() {
 		this.view.parentNode.removeChild(this.view);
-	}
-
-	_constructor(x, y, width, height) {
-		// So that subclasses can override the constructor
 	}
 
 	layoutSubviews() {

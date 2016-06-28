@@ -1,16 +1,33 @@
 class ImageView extends View {
-	_constructor(x, y, width, height) {
-		console.log("ImageView _constructor");
+
+	static imageViewWithFrame(x, y, width, height) {
+		console.log("ImageView viewWithFrame");
+		var newImageView = new ImageView();
+		newImageView.init();
+		newImageView.setX(x);
+		newImageView.setY(y);
+		newImageView.setWidth(width);
+		newImageView.setHeight(height);
+		return newImageView;
+	}
+
+	init() {
 		this.imageView = document.createElement('img');
-		this.imageView.style.position = 'absolute';
-		this.imageView.style.left = x;
-		this.imageView.style.top = y;
-		this.imageView.style.width = width;
-		this.imageView.style.height = height;
+		super.init();
 		this.view.appendChild(this.imageView);
 	}
 
 	setImage(src) {
 		this.imageView.src = src;
+	}
+
+	setHeight(height) {
+		super.setHeight(height);
+		this.imageView.style.height = height;
+	}
+
+	setWidth(width) {
+		super.setWidth(width);
+		this.imageView.style.width = width;
 	}
 }
