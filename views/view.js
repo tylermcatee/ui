@@ -32,6 +32,8 @@ class View {
 		this.setOpacity(1.0);
 
 		addEventListener('resize', this.layoutSubviews);
+
+		this.eventListeners = {};
 	}
 
 	// 
@@ -64,8 +66,19 @@ class View {
 		// Subclass
 	}
 
-	addClickHandler(clickHandler) {
-		this.view.addEventListener("click", clickHandler);
+	addEventHandler(eventHandler) {
+		if (this.eventListeners[eventHandler.eventName] == null) {
+			this.eventListeners[eventHandler.eventName] = eventHandler;
+		} else {
+			console.log.error("Need to add support for handling collision of eventHanlders, and removing them.");
+		}
+		eventHandler.target = this;
+		this.view.addEventListener(eventHandler.eventName, this.callbackEventHandler.bind(this));
+	}
+
+	callbackEventHandler(event) {
+		var eventHandler = this.eventListeners[event.type];
+		eventHandler.performAction();
 	}
 
 	// 

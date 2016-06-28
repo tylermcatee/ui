@@ -2,7 +2,9 @@
 </body>
 
 <script src="../utilities/float.js"></script>
+<script src="../utilities/color.js"></script>
 <script src="../views/view.js"></script>
+<script src="../events/eventhandler.js"></script>
 <script src="../views/imageview.js"></script>
 <script src="../animation/animation.js"></script>
 <script src="../controllers/viewcontroller.js"></script>
@@ -20,12 +22,25 @@ class MainViewController extends ViewController {
 		this.squareView.setBackgroundColor('red');
 		this.view.addSubview(this.squareView);
 
+		this.isRed = true;
 
-		this.squareView.addClickHandler(function(event) {
-			console.log(this);
-			console.log(event.target);
-			console.log(this == event.target);
-		});
+		var squareClickHandler = EventHandler.clickHandler(this.handleClick.bind(this));
+		this.squareView.addEventHandler(squareClickHandler);
+	}
+
+	handleClick(clickHandler) {
+		var squareView = clickHandler.target;
+		if (this.isRed) {
+			Animation.animate(squareView, 0.25, function(view) {
+				view.setBackgroundColor('blue');
+			});
+			this.isRed = false;
+		} else {
+			Animation.animate(squareView, 0.25, function(view) {
+				view.setBackgroundColor('red');
+			});
+			this.isRed = true;
+		}
 	}
 }
 
