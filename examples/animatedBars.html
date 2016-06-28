@@ -38,11 +38,11 @@ class AnimatedBarsViewController extends ViewController {
     }
 
     animateBars() {
-        for (var i = 0; i < TOTAL_BARS; i++) {
+        for (var i = 0; i < this.barViews.length; i++) {
             if (randBetween(0, 2) == 1) {
                 var barView = this.barViews[i];
-                Animation.animate(this.barViews[i], 0.4, function(view) {
-                    var height = randBetween(0, TOTAL_HEIGHT) * .8;
+                Animation.animate(barView, 0.4, function(view) {
+                    var height = randBetween(0, TOTAL_HEIGHT) * 0.8;
                     view.setY(TOTAL_HEIGHT - height);
                     view.setHeight(height);
                     return view;
