@@ -1,14 +1,7 @@
 <body>
 </body>
 
-<script src="../utilities/float.js"></script>
-<script src="../utilities/color.js"></script>
-<script src="../views/view.js"></script>
-<script src="../events/eventhandler.js"></script>
-<script src="../views/imageview.js"></script>
-<script src="../animation/animation.js"></script>
-<script src="../controllers/viewcontroller.js"></script>
-<script src="../views/window.js"></script>
+<script src="../ui.js"></script>
 
 <script>
 
@@ -49,8 +42,8 @@ class MainViewController extends ViewController {
 			var location = clickHandler.locationInView(target);	
 			Animation.animate(this.squareView, 0.25, function(view) {
 				view.setBackgroundColor('green');
-				view.setX(location.x);
-				view.setY(location.y);
+				view.setX(location.x - view.width/2.0);
+				view.setY(location.y - view.height/2.0);
 			});
 		}
 	}
