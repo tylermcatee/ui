@@ -40,16 +40,16 @@
         addViewAtPoint(x, y) {
             var size = 30;
             var view = View.viewWithFrame(x, y, size, size);
-            view.setBackgroundColor('gray');
+            view.setBackgroundColor(randColor());
             this.view.addSubview(view);
             return view
         }
 
         makeViewFlyAway(view, xDir, yDir) {
             Animation.animate(view, 3, function(view) {
-                console.log(xDir, yDir);
                 var x = xDir * document.body.clientWidth;
                 var y = yDir * document.body.clientWidth;
+                view.setBackgroundColor(randColor());
                 view.setX(x);
                 view.setY(y);
             }, function() {
@@ -60,6 +60,13 @@
 
     function randBetween(a, b) {
         return Math.floor(Math.random() * b) + a;
+    }
+
+    function randColor() {
+        var r = randBetween(0, 255);
+        var g = randBetween(0, 255);
+        var b = randBetween(0, 255);
+        return "rgb(" + r + ',' + g + ',' + b + ')';
     }
 
     var viewController = new AnimatedBarsViewController();
