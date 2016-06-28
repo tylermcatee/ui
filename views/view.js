@@ -133,6 +133,8 @@ class View {
 
 		this.view.style.left = this.calculateLeft();
 		this.view.style.top = this.calculateTop();
+		this.view.style.width = this.calculateWidth();
+		this.view.style.height = this.calculateHeight();
 	}
 
 	setPosition(position) {
@@ -152,12 +154,12 @@ class View {
 
 	setWidth(width) {
 		this.width = width;
-		this.view.style.width = width;
+		this.view.style.width = this.calculateWidth();
 	}
 
 	setHeight(height) {
 		this.height = height;
-		this.view.style.height = height;
+		this.view.style.height = this.calculateHeight();
 	}
 
 	setBackgroundColor(color) {
@@ -180,10 +182,21 @@ class View {
 	// 
 
 	calculateLeft() {
-		return this.x + this.transform.x;
+		var widthDescrepency = this.calculateWidth() - this.width;
+		return this.x + this.transform.x - widthDescrepency/2.0;
 	}
 
 	calculateTop() {
-		return this.y + this.transform.y;
+		var heightDescrepency = this.calculateHeight() - this.height;
+		return this.y + this.transform.y - heightDescrepency/2.0;
+	}
+
+	calculateWidth() {
+		console.log("returning " + this.width + " * " + this.transform.widthScale + " = " + this.width * this.transform.widthScale);
+		return this.width * this.transform.widthScale;
+	}
+
+	calculateHeight() {
+		return this.height * this.transform.heightScale;
 	}
 }

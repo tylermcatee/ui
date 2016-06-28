@@ -15,12 +15,21 @@ class MainViewController extends ViewController {
 		this.alertBox = View.viewWithFrame(0.0, 0.0, 0.0, 0.0);
 		this.alertBox.setBackgroundColor('#161618');
 		this.alertBox.setOpacity(0.0);
-		this.alertBox.setTransform(Transform.scalar(0.0, 50.0));
 		this.view.addSubview(this.alertBox);
+	}
+
+	shouldLayoutAsMobile() {
+		return this.view.width - 40.0 < 800.0;
 	}
 
 	viewDidAppear() {
 		super.viewDidAppear();
+
+		if (this.shouldLayoutAsMobile()) {
+			this.alertBox.setTransform(Transform.scale(1.2, 1.2));
+		} else {
+			this.alertBox.setTransform(Transform.translate(0.0, 100.0));
+		}
 
 		Animation.animate(this.alertBox, 0.75, function(view) {
 			view.setOpacity(1.0);
@@ -29,9 +38,13 @@ class MainViewController extends ViewController {
 	}
 
 	layoutAlertBox() {
-		var width = Math.min(this.view.width - 80.0, 800.0);
-		this.alertBox.setWidth(width);
-		this.alertBox.setHeight(300.0);
+		if (this.view.width - 40.0 > 800.0) {
+			this.alertBox.setWidth(800.0);
+			this.alertBox.setHeight(300.0);
+		} else {
+			this.alertBox.setWidth(this.view.width - 40.0);
+			this.alertBox.setHeight(this.view.height - 40.0);
+		}
 		this.alertBox.setX((this.view.width - this.alertBox.width)/2.0);
 		this.alertBox.setY((this.view.height - this.alertBox.height)/2.0);
 	}
