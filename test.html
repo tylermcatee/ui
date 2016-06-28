@@ -5,39 +5,51 @@
 <script src="view.js"></script>
 <script src="imageview.js"></script>
 <script src="animation.js"></script>
+<script src="viewcontroller.js"></script>
+<script src="window.js"></script>
 
 <script>
 
-var view = View.viewWithFrame(50.0, 50.0, 100.0, 100.0);
-view.setBorderRadius(20.0);
-view.setBackgroundColor('red');
-view.embedIn(document.body);
+class MainViewController extends ViewController {
 
-Animation.animate(view, 1.0, function(view) {
-	view.setOpacity(0.0);
-	view.setX(100.0);
-	view.setY(100.0);
-	view.setBorderRadius(0.0);
-	return view;
-}, function() {
-	Animation.animate(view, 1.0, function(view) {
-		view.setOpacity(1.0);
-		view.setX(50.0);
-		view.setY(50.0);
-		view.setBorderRadius(50.0);
-	});
-});
+	viewDidLoad() {
+		super.viewDidLoad();
 
-var imageView = ImageView.imageViewWithFrame(100.0, 100.0, 100.0, 100.0);
-imageView.setImage('cat.jpg');
-imageView.embedIn(document.body);
-imageView.setOpacity(0.0);
+		var view = View.viewWithFrame(50.0, 50.0, 100.0, 100.0);
+		view.setBorderRadius(20.0);
+		view.setBackgroundColor('red');
+		this.view.addSubview(view);
+
+		Animation.animate(view, 1.0, function(view) {
+			view.setOpacity(0.0);
+			view.setX(100.0);
+			view.setY(100.0);
+			view.setBorderRadius(0.0);
+			return view;
+		}, function() {
+			Animation.animate(view, 1.0, function(view) {
+				view.setOpacity(1.0);
+				view.setX(50.0);
+				view.setY(50.0);
+				view.setBorderRadius(50.0);
+			});
+		});
+
+		var imageView = ImageView.imageViewWithFrame(100.0, 100.0, 100.0, 100.0);
+		imageView.setImage('cat.jpg');
+		imageView.embedIn(document.body);
+		imageView.setOpacity(0.0);
 
 
-Animation.animate(imageView, 2.0, function(view) {
-	view.setOpacity(1.0);
-	view.setWidth(300.0);
-	view.setHeight(300.0);
-});
+		Animation.animate(imageView, 2.0, function(view) {
+			view.setOpacity(1.0);
+			view.setWidth(300.0);
+			view.setHeight(300.0);
+		});
+	}
+}
+
+var viewController = new MainViewController();
+Window.mainWindow().setRootViewController(viewController);
 
 </script>
