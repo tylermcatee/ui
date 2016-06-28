@@ -2,8 +2,16 @@
 
 // updateCallback is a function that takes a view and returns
 // a mutated view
+
+// completion is a function that takes no parameters and returns
+// no parameters
+
 class Animation {
 	static animate(view, duration, updateCallback) {
+		Animation.animateWithCompletion(view, duration, updateCallback, null);
+	}
+
+	static animate(view, duration, updateCallback, completion) {
 		var mutatableView = view.copy();
 		updateCallback(mutatableView);
 
@@ -24,6 +32,10 @@ class Animation {
 				for (var i = 0; i < keyframes.length; i++) {
 					var keyframe = keyframes[i];
 					view.setKeyValue(keyframe[0], keyframe[2]);
+				}
+
+				if (completion != null) {
+					completion();
 				}
 				return;
 			}
