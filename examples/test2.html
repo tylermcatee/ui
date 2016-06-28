@@ -1,0 +1,35 @@
+<body>
+</body>
+
+<script src="../utilities/float.js"></script>
+<script src="../views/view.js"></script>
+<script src="../views/imageview.js"></script>
+<script src="../animation/animation.js"></script>
+<script src="../controllers/viewcontroller.js"></script>
+<script src="../views/window.js"></script>
+
+<script>
+
+class MainViewController extends ViewController {
+
+	viewDidLoad() {
+		super.viewDidLoad();
+
+		this.squareView = View.viewWithFrame(50.0, 50.0, 100.0, 100.0);
+		this.squareView.setBorderRadius(20.0);
+		this.squareView.setBackgroundColor('red');
+		this.view.addSubview(this.squareView);
+
+
+		this.squareView.addClickHandler(function(event) {
+			console.log(this);
+			console.log(event.target);
+			console.log(this == event.target);
+		});
+	}
+}
+
+var viewController = new MainViewController();
+Window.mainWindow().setRootViewController(viewController);
+
+</script>

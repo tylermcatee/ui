@@ -1,12 +1,12 @@
 <body>
 </body>
 
-<script src="float.js"></script>
-<script src="view.js"></script>
-<script src="imageview.js"></script>
-<script src="animation.js"></script>
-<script src="viewcontroller.js"></script>
-<script src="window.js"></script>
+<script src="../utilities/float.js"></script>
+<script src="../views/view.js"></script>
+<script src="../views/imageview.js"></script>
+<script src="../animation/animation.js"></script>
+<script src="../controllers/viewcontroller.js"></script>
+<script src="../views/window.js"></script>
 
 <script>
 
@@ -36,7 +36,7 @@ class MainViewController extends ViewController {
 		});
 
 		var imageView = ImageView.imageViewWithFrame(100.0, 100.0, 100.0, 100.0);
-		imageView.setImage('cat.jpg');
+		imageView.setImage('../assets/cat.jpg');
 		imageView.embedIn(document.body);
 		imageView.setOpacity(0.0);
 

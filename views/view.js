@@ -64,6 +64,10 @@ class View {
 		// Subclass
 	}
 
+	addClickHandler(clickHandler) {
+		this.view.addEventListener("click", clickHandler);
+	}
+
 	// 
 	// Style Properties
 	// 
