@@ -13,4 +13,9 @@ class ViewController {
 		// Called after the view has been loaded.
 		return;
 	}
+
+	windowDidResize() {
+		// Called whenever the window resizes
+		return;
+	}
 }
