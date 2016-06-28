@@ -1,0 +1,30 @@
+<body>
+</body>
+
+<script src="../utilities/float.js"></script>
+<script src="../utilities/color.js"></script>
+<script src="../views/view.js"></script>
+<script src="../animation/animation.js"></script>
+<script src="../controllers/viewcontroller.js"></script>
+<script src="../views/window.js"></script>
+
+<script>
+
+class ColorAnimationViewController extends ViewController {
+	viewDidLoad() {
+		super.viewDidLoad();
+
+		var colorView = View.viewWithFrame(100, 100, 100, 100);
+		colorView.setBackgroundColor('blue');
+		this.view.addSubview(colorView);
+
+		Animation.animate(colorView, 1.0, function(view) {
+			view.setBackgroundColor('salmon');
+		});
+	}
+}
+
+colorViewController = new ColorAnimationViewController();
+Window.mainWindow().setRootViewController(colorViewController);
+
+</script>

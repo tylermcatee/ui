@@ -6,6 +6,10 @@
 // completion is a function that takes no parameters and returns
 // no parameters
 
+KEYFRAME_KEY = 0;
+KEYFRAME_FROM = 1;
+KEYFRAME_TO = 2;
+
 class Animation {
 	static animate(view, duration, updateCallback) {
 		Animation.animateWithCompletion(view, duration, updateCallback, null);
@@ -43,11 +47,23 @@ class Animation {
 
 			for (var i = 0; i < keyframes.length; i++) {
 				var keyframe = keyframes[i];
-				var interpolatedPosition = flerp(keyframe[1], keyframe[2], percent);
-				view.setKeyValue(keyframe[0], interpolatedPosition);
+				var interpolatingFunction = Animation._interpolatingFunctionForKey(keyframe[0]);
+				var interpolatedPosition = interpolatingFunction(keyframe[KEYFRAME_FROM], keyframe[KEYFRAME_TO], percent);
+				view.setKeyValue(keyframe[KEYFRAME_KEY], interpolatedPosition);
 			}
 		}
 		requestAnimationFrame(update);
+	}
+
+	static _interpolatingFunctionForKey(key) {
+		switch (key) {
+			case 'backgroundColor':
+				return interpolatedColor;
+				break;
+			default:
+				return flerp;
+				break;
+		}
 	}
 
 	static _keyframes(oldView, newView) {

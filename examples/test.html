@@ -2,6 +2,7 @@
 </body>
 
 <script src="../utilities/float.js"></script>
+<script src="../utilities/color.js"></script>
 <script src="../views/view.js"></script>
 <script src="../views/imageview.js"></script>
 <script src="../animation/animation.js"></script>
@@ -27,11 +28,14 @@ class MainViewController extends ViewController {
 			view.setBorderRadius(0.0);
 			return view;
 		}, function() {
-			Animation.animate(view, 1.0, function(view) {
+			Animation.animate(view, 0.75, function(view) {
 				view.setOpacity(1.0);
 				view.setX(50.0);
 				view.setY(50.0);
 				view.setBorderRadius(50.0);
+				view.setWidth(200.0);
+				view.setHeight(200.0);
+				view.setBackgroundColor('blue');
 			});
 		});
 
