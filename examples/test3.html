@@ -1,0 +1,45 @@
+<body>
+</body>
+
+<script src="../ui.js"></script>
+
+<script>
+
+class MainViewController extends ViewController {
+
+	viewDidLoad() {
+		super.viewDidLoad();
+
+		this.view.setBackgroundColor('#202022');
+
+		this.alertBox = View.viewWithFrame(0.0, 0.0, 0.0, 0.0);
+		this.alertBox.setBackgroundColor('#161618');
+		this.alertBox.setOpacity(0.0);
+		this.view.addSubview(this.alertBox);
+	}
+
+	viewDidAppear() {
+		super.viewDidAppear();
+
+		Animation.animate(this.alertBox, 0.8, function(view) {
+			view.setOpacity(1.0);
+		});
+	}
+
+	layoutAlertBox() {
+		var width = Math.min(this.view.width - 80.0, 800.0);
+		this.alertBox.setWidth(width);
+		this.alertBox.setHeight(300.0);
+		this.alertBox.setX((this.view.width - this.alertBox.width)/2.0);
+		this.alertBox.setY((this.view.height - this.alertBox.height)/2.0);
+	}
+
+	windowDidResize() {
+		this.layoutAlertBox();
+	}
+}
+
+var viewController = new MainViewController();
+Window.mainWindow().setRootViewController(viewController);
+
+</script>

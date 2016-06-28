@@ -21,10 +21,15 @@ class Window {
 		this.rootViewController.windowDidResize();
 	}
 
+	load() {
+		this.rootViewController.viewDidAppear();
+	}
+
 	setRootViewController(viewController) {
 		viewController.view.embedIn(this.containee);
 		this.rootViewController = viewController;
 		window.addEventListener("resize", this.layoutContainee.bind(this));
+		window.onload = this.load.bind(this);
 		this.layoutContainee();
 	}
 }

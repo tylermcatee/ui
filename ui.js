@@ -46,6 +46,7 @@ return keyframes;}}
 class ViewController{constructor(){this.view=this.loadView();this.viewDidLoad();}
 loadView(){return View.viewWithFrame(0,0,0,0);}
 viewDidLoad(){return;}
+viewDidAppear(){return;}
 windowDidResize(){return;}}
 class EventHandler{static clickHandler(action){var handler=new EventHandler(action);handler.eventName="click";return handler;}
 constructor(action){this.action=action;this.eventName="";this.target=null;this.lastEvent=null;}
@@ -60,4 +61,5 @@ var __mainWindow;class Window{static mainWindow(){if(__mainWindow==null){__mainW
 return __mainWindow;}
 setContainee(containee){this.containee=containee;}
 layoutContainee(){this.rootViewController.view.setWidth(document.body.clientWidth);this.rootViewController.view.setHeight(document.body.clientHeight);this.rootViewController.view.setX(0.0);this.rootViewController.view.setY(0.0);this.rootViewController.windowDidResize();}
-setRootViewController(viewController){viewController.view.embedIn(this.containee);this.rootViewController=viewController;window.addEventListener("resize",this.layoutContainee.bind(this));this.layoutContainee();}}
+load(){this.rootViewController.viewDidAppear();}
+setRootViewController(viewController){viewController.view.embedIn(this.containee);this.rootViewController=viewController;window.addEventListener("resize",this.layoutContainee.bind(this));window.onload=this.load.bind(this);this.layoutContainee();}}

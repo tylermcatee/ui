@@ -14,6 +14,11 @@ class ViewController {
 		return;
 	}
 
+	viewDidAppear() {
+		// Called once the view is visible on screen.
+		return;
+	}
+
 	windowDidResize() {
 		// Called whenever the window resizes
 		return;
