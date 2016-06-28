@@ -1,0 +1,68 @@
+<body>
+</body>
+
+<script src="../ui.js"></script>
+
+<script>
+
+    TOTAL_WIDTH = document.body.clientWidth;
+    TOTAL_HEIGHT = document.body.clientHeight;
+    TOTAL_BARS = 25;
+
+    class AnimatedBarsViewController extends ViewController {
+        viewDidLoad() {
+            super.viewDidLoad();
+
+            var viewClickHandler = EventHandler.clickHandler(this.handleClick.bind(this));
+            this.view.addEventHandler(viewClickHandler);
+        }
+
+        handleClick(clickHandler) {
+            var location = clickHandler.locationInView(clickHandler.target);
+            this.explodeAtPoint(location.x, location.y);
+        }
+
+        explodeAtPoint(x, y) {
+            var range = 2;
+            var separation = 5;
+            for (var x1 = 1 - range; x1 < range ; x1++) {
+                for (var y1 = 1 - range; y1 < range; y1++) {
+                    if (y1 || x1) {
+                        var xPos = x1 * separation + x;
+                        var yPos = y1 * separation + y;
+                        var view = this.addViewAtPoint(xPos, yPos);
+                        this.makeViewFlyAway(view, (xPos - x) / separation, (yPos - y) / separation);
+                    }
+                }
+            }
+        }
+
+        addViewAtPoint(x, y) {
+            var size = 30;
+            var view = View.viewWithFrame(x, y, size, size);
+            view.setBackgroundColor('gray');
+            this.view.addSubview(view);
+            return view
+        }
+
+        makeViewFlyAway(view, xDir, yDir) {
+            Animation.animate(view, 3, function(view) {
+                console.log(xDir, yDir);
+                var x = xDir * document.body.clientWidth;
+                var y = yDir * document.body.clientWidth;
+                view.setX(x);
+                view.setY(y);
+            }, function() {
+                view.removeFromSuperview();
+            });
+        }
+    }
+
+    function randBetween(a, b) {
+        return Math.floor(Math.random() * b) + a;
+    }
+
+    var viewController = new AnimatedBarsViewController();
+    Window.mainWindow().setRootViewController(viewController);
+
+</script>
