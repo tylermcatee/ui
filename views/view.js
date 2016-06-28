@@ -22,6 +22,7 @@ class View {
 		this.view = document.createElement('div');
 		this.view.id = Date.now();
 
+		this.setTransform(Transform.identity());
 		this.setPosition('absolute');
 		this.setX(0.0);
 		this.setY(0.0);
@@ -124,6 +125,13 @@ class View {
 		}
 	}
 
+	setTransform(transform) {
+		this.transform = transform;
+
+		this.view.style.left = this.calculateLeft();
+		this.view.style.top = this.calculateTop();
+	}
+
 	setPosition(position) {
 		this.position = position;
 		this.view.style.position = position;
@@ -131,12 +139,12 @@ class View {
 
 	setX(x) {
 		this.x = x;
-		this.view.style.left = x;
+		this.view.style.left = this.calculateLeft();
 	}
 
 	setY(y) {
 		this.y = y;
-		this.view.style.top = y;
+		this.view.style.top = this.calculateTop();
 	}
 
 	setWidth(width) {
@@ -162,5 +170,17 @@ class View {
 	setOpacity(opacity) {
 		this.opacity = opacity;
 		this.view.style.opacity = opacity;
+	}
+
+	// 
+	// Property Helpers
+	// 
+
+	calculateLeft() {
+		return this.x + this.transform.x;
+	}
+
+	calculateTop() {
+		return this.y + this.transform.y;
 	}
 }

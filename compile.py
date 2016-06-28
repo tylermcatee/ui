@@ -255,6 +255,7 @@ ignore_directories = ['.git', 'assets', 'examples']
 preprocess_files = [
 	'utilities/color.js',
 	'utilities/float.js',
+    'utilities/transform.js',
 	'views/view.js',
 ]
 

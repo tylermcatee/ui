@@ -14,8 +14,11 @@ var FLOAT_EPISLON=0.0001;function fequal(a,b){var absA=Math.abs(a);var absB=Math
 function fpercent(min,current,max){return(current-min)/(max-min);}
 function flerp(min,max,percent){return percent*(max-min)+min;}
 function fgreater(a,b){return(a-b)>FLOAT_EPISLON;}
+class Transform{constructor(){this.x=0;this.y=0;}
+static identity(){return new Transform();}
+static scalar(x,y){var transform=new Transform();transform.x=x;transform.y=y;}}
 class View{static viewWithFrame(x,y,width,height){var newView=new View();newView.init();newView.setX(x);newView.setY(y);newView.setWidth(width);newView.setHeight(height);return newView;}
-init(){this.view=document.createElement('div');this.view.id=Date.now();this.setPosition('absolute');this.setX(0.0);this.setY(0.0);this.setWidth(0.0);this.setHeight(0.0);this.setBackgroundColor('');this.setBorderRadius(0.0);this.setOpacity(1.0);addEventListener('resize',this.layoutSubviews);this.eventListeners={};}
+init(){this.view=document.createElement('div');this.view.id=Date.now();this.setTransform(Transform.identity());this.setPosition('absolute');this.setX(0.0);this.setY(0.0);this.setWidth(0.0);this.setHeight(0.0);this.setBackgroundColor('');this.setBorderRadius(0.0);this.setOpacity(1.0);addEventListener('resize',this.layoutSubviews);this.eventListeners={};}
 copy(){var copyView=View.viewWithFrame(this.x,this.y,this.width,this.height);copyView.setBackgroundColor(this.backgroundColor);copyView.setBorderRadius(this.borderRadius);copyView.setOpacity(this.opacity);return copyView;}
 embedIn(element){element.appendChild(this.view);}
 addSubview(view){this.view.appendChild(view.view);}
@@ -25,14 +28,17 @@ addEventHandler(eventHandler){if(this.eventListeners[eventHandler.eventName]==nu
 eventHandler.target=this;this.view.addEventListener(eventHandler.eventName,this.callbackEventHandler.bind(this));}
 callbackEventHandler(event){var eventHandler=this.eventListeners[event.type];eventHandler.performAction(event);event.stopPropagation();}
 setKeyValue(key,value){switch(key){case'position':this.setPosition(value);break;case'x':this.setX(value);break;case'y':this.setY(value);break;case'width':this.setWidth(value);break;case'height':this.setHeight(value);break;case'backgroundColor':this.setBackgroundColor(value);break;case'borderRadius':this.setBorderRadius(value);break;case'opacity':this.setOpacity(value);break;default:console.error("View: setKeyValue not implemented for key "+key);break;}}
+setTransform(transform){this.transform=transform;this.view.style.left=this.calculateLeft();this.view.style.top=this.calculateTop();}
 setPosition(position){this.position=position;this.view.style.position=position;}
-setX(x){this.x=x;this.view.style.left=x;}
-setY(y){this.y=y;this.view.style.top=y;}
+setX(x){this.x=x;this.view.style.left=this.calculateLeft();}
+setY(y){this.y=y;this.view.style.top=this.calculateTop();}
 setWidth(width){this.width=width;this.view.style.width=width;}
 setHeight(height){this.height=height;this.view.style.height=height;}
 setBackgroundColor(color){this.backgroundColor=color;this.view.style.background=color;}
 setBorderRadius(radius){this.borderRadius=radius;this.view.style.borderRadius=radius;}
-setOpacity(opacity){this.opacity=opacity;this.view.style.opacity=opacity;}}
+setOpacity(opacity){this.opacity=opacity;this.view.style.opacity=opacity;}
+calculateLeft(){return this.x+this.transform.x;}
+calculateTop(){return this.y+this.transform.y;}}
 KEYFRAME_KEY=0;KEYFRAME_FROM=1;KEYFRAME_TO=2;class Animation{static animate(view,duration,updateCallback){Animation.animateWithCompletion(view,duration,updateCallback,null);}
 static animate(view,duration,updateCallback,completion){var mutatableView=view.copy();updateCallback(mutatableView);var keyframes=Animation._keyframes(view,mutatableView);if(keyframes.length==0){console.log("Animation: No keyframes detected.");return;}
 var startTime=Date.now();var finishTime=startTime+duration*1000.0;function update(){var currentTime=Date.now();var percent=fpercent(startTime,currentTime,finishTime);if(fgreater(percent,1.0)){for(var i=0;i<keyframes.length;i++){var keyframe=keyframes[i];view.setKeyValue(keyframe[0],keyframe[2]);}
