@@ -1,7 +1,6 @@
 class ImageView extends View {
 
 	static imageViewWithFrame(x, y, width, height) {
-		console.log("ImageView viewWithFrame");
 		var newImageView = new ImageView();
 		newImageView.init();
 		newImageView.setX(x);
