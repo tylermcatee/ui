@@ -1,4 +1,5 @@
 kColorHexRegex = /^#[0-9A-F]{6}$/i
+kColorRGBRegex = /^rgb[(](?:\s*0*(?:\d\d?(?:\.\d+)?(?:\s*%)?|\.\d+\s*%|100(?:\.0*)?\s*%|(?:1\d\d|2[0-4]\d|25[0-5])(?:\.\d+)?)\s*(?:,(?![)])|(?=[)]))){3}[)]$/i
 __HTMLColorsToHex = {"aliceblue":"#f0f8ff","antiquewhite":"#faebd7","aqua":"#00ffff","aquamarine":"#7fffd4","azure":"#f0ffff",
     "beige":"#f5f5dc","bisque":"#ffe4c4","black":"#000000","blanchedalmond":"#ffebcd","blue":"#0000ff","blueviolet":"#8a2be2","brown":"#a52a2a","burlywood":"#deb887",
     "cadetblue":"#5f9ea0","chartreuse":"#7fff00","chocolate":"#d2691e","coral":"#ff7f50","cornflowerblue":"#6495ed","cornsilk":"#fff8dc","crimson":"#dc143c","cyan":"#00ffff",
@@ -25,25 +26,40 @@ __HTMLColorsToHex = {"aliceblue":"#f0f8ff","antiquewhite":"#faebd7","aqua":"#00f
     "yellow":"#ffff00","yellowgreen":"#9acd32"};
 
 function interpolatedColor(min, max, percent) {
-	var minIsHexColor = kColorHexRegex.test(min);
-	if (!minIsHexColor) {
-		min = _hexForCSSDefault(min);
-		if (min == null) {
-			console.error("Could not find color " + min);
-			return max; // Fallback to max for interpolation
-		}
-	}
-	var maxIsHexColor = kColorHexRegex.test(max);
-	if (!maxIsHexColor) {
-		max = _hexForCSSDefault(max);
-		if (max == null) {
-			console.error("Could not find color " + max);
-			return min; // Fallback to min for interpolation
-		}
-	}
+    
+    var minIsRGB = kColorRGBRegex.test(min);
+    var minRGB;
+    if (!minIsRGB) {
+        var minIsHexColor = kColorHexRegex.test(min);
+        if (!minIsHexColor) {
+            min = _hexForCSSDefault(min);
+            if (min == null) {
+                console.error("Could not find color " + min);
+                return max; // Fallback to max for interpolation
+            }
+        }
+        minRGB = _hexToRgb(min);
+    } else {
+        minRGB = min.substring(4, min.length-1).replace(/[^\d,]/g, '').split(',');
+        minRGB = {'r' : parseInt(minRGB[0]), 'g' : parseInt(minRGB[1]), 'b' : parseInt(minRGB[2])};
+    }	
 
-	var minRGB = _hexToRgb(min);
-	var maxRGB = _hexToRgb(max);
+    var maxIsRGB = kColorRGBRegex.test(max);
+    var maxRGB;
+    if (!maxIsRGB) {
+        var maxIsHexColor = kColorHexRegex.test(max);
+        if (!maxIsHexColor) {
+            max = _hexForCSSDefault(max);
+            if (max == null) {
+                console.error("Could not find color " + max);
+                return min; // Fallback to min for interpolation
+            }
+        }
+        maxRGB = _hexToRgb(max);
+    } else {
+        maxRGB = max.substring(4, max.length - 1).replace(/[^\d,]/g, '').split(',');
+        maxRGB = {'r' : parseInt(maxRGB[0]), 'g' : parseInt(maxRGB[1]), 'b' : parseInt(maxRGB[2])};
+    }
 	
 	var lerpRed = Math.floor(flerp(minRGB['r'], maxRGB['r'], percent));
 	var lerpGreen = Math.floor(flerp(minRGB['g'], maxRGB['g'], percent));
