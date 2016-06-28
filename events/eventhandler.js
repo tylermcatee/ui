@@ -10,9 +10,15 @@ class EventHandler {
 		this.action = action;
 		this.eventName = "";
 		this.target = null;
+		this.lastEvent = null;
 	}
 
-	performAction() {
+	performAction(event) {
+		this.lastEvent = event;
 		this.action(this);
+	}
+
+	locationInView(view) {
+		return {x: this.lastEvent.x, y: this.lastEvent.y};
 	}
 }

@@ -46,8 +46,11 @@ class MainViewController extends ViewController {
 				this.isRed = true;
 			}
 		} else {
+			var location = clickHandler.locationInView(target);	
 			Animation.animate(this.squareView, 0.25, function(view) {
 				view.setBackgroundColor('green');
+				view.setX(location.x);
+				view.setY(location.y);
 			});
 		}
 	}

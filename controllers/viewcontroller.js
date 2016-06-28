@@ -6,7 +6,7 @@ class ViewController {
 
 	loadView() {
 		// This is where subclasses should create their custom view hierarchy
-		return View.viewWithFrame(0, 0, 1000, 1000);
+		return View.viewWithFrame(0, 0, 0, 0);
 	}
 
 	viewDidLoad() {

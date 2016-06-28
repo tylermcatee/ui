@@ -82,7 +82,7 @@ class View {
 
 	callbackEventHandler(event) {
 		var eventHandler = this.eventListeners[event.type];
-		eventHandler.performAction();
+		eventHandler.performAction(event);
 		event.stopPropagation();
 	}
 
