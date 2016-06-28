@@ -66,6 +66,10 @@ class View {
 		// Subclass
 	}
 
+	// 
+	// Events
+	// 
+
 	addEventHandler(eventHandler) {
 		if (this.eventListeners[eventHandler.eventName] == null) {
 			this.eventListeners[eventHandler.eventName] = eventHandler;
@@ -79,6 +83,7 @@ class View {
 	callbackEventHandler(event) {
 		var eventHandler = this.eventListeners[event.type];
 		eventHandler.performAction();
+		event.stopPropagation();
 	}
 
 	// 
