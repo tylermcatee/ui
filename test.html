@@ -1,0 +1,24 @@
+<body>
+</body>
+
+<script src="float.js"></script>
+<script src="view.js"></script>
+<script src="imageview.js"></script>
+<script src="animation.js"></script>
+
+<script>
+
+var view = new View(50.0, 50.0, 100.0, 100.0);
+view.setBorderRadius(20.0);
+view.setBackgroundColor('red');
+view.embedIn(document.body);
+
+Animation.animate(view, 1.0, function(view) {
+	// view.setOpacity(0.0);
+	view.setX(100.0);
+	view.setY(100.0);
+	view.setBorderRadius(0.0);
+	return view;
+});
+
+</script>
