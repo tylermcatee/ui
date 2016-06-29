@@ -1,9 +1,58 @@
 <body>
+
+	<div id="yes">
+		Hello there
+	</div>
+
 </body>
 
 <script src="../ui.js"></script>
+<style>
+
+#Test {
+	position: absolute;
+    top: -1000px;
+    left: -1000px;
+    height: auto;
+    width: auto;
+    white-space: nowrap; /* Thanks to Herb Caudill comment */
+}
+
+#yes {
+	position: absolute;
+	width: 81px;
+	height:23px;
+	background-color: green;
+	font-size: 18px;
+}
+
+</style>
 
 <script>
+
+
+// Should be 314, 18
+
+function textSize(text, fontSize) {
+	var testDummy = textSize.testDummy || function() {
+		textSize.testDummy = document.createElement("div");
+		textSize.testDummy.style.position = 'absolute';
+		textSize.testDummy.style.top = -1000;
+		textSize.testDummy.style.left = -1000;
+		textSize.testDummy.style.height = 'auto';
+		textSize.testDummy.style.width = 'auto';
+		textSize.testDummy.style.whiteSpace = 'nowrap';
+		document.body.appendChild(textSize.testDummy);
+		return textSize.testDummy;
+	}();
+	testDummy.innerHTML = text;
+	testDummy.style.fontSize = fontSize;
+	var dummyWidth = (testDummy.clientWidth + 1);
+	var dummyHeight = (testDummy.clientHeight + 1);
+	return {'width' : dummyWidth, 'height' : dummyHeight};
+}
+
+console.log(textSize("Hello there", 18.0));
 
 class MainViewController extends ViewController {
 

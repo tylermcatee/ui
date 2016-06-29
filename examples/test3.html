@@ -23,23 +23,16 @@ class MainViewController extends ViewController {
 
 		this.label = Label.labelWithFrame(0, 0, 235.0, 110.0);
 		this.label.setText("CAT");
-		this.label.setTextAlign('center');
-		this.label.setFontSize(90.0);
+		// this.label.setTextAlign('center');
+		var fontSize = 75.0;
+		this.label.setFontSize(fontSize);
 		this.label.setFontColor('white');
-		this.label.setOpacity(0.0);
 		this.label.setBorderColor('red');
 		this.label.setBorderWidth(1.0);
+		var labelSize = Label.textSize("CAT", fontSize);
+		this.label.setWidth(labelSize.width);
+		this.label.setHeight(labelSize.height);
 		this.alertBox.addSubview(this.label);
-
-		var viewClickHandler = EventHandler.clickHandler(this.handleClick.bind(this));
-        this.label.addEventHandler(viewClickHandler);
-	}
-
-	handleClick(clickHandler) {
-		Animation.animate(this.label, 0.5, function(view) {
-			view.setBorderColor('blue');
-			view.setBorderWidth(5.0);
-		});
 	}
 
 	shouldLayoutAsMobile() {
