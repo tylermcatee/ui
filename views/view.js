@@ -22,7 +22,11 @@ class View {
 		this.view = document.createElement('div');
 		this.view.id = Date.now();
 
-		this.setTransform(Transform.identity());
+		this.superview = null;
+		this.subviews = [];
+
+		this.recursiveTransform = Transform.identity();
+		this.setTransformWithoutRecursion(Transform.identity());
 		this.setPosition('absolute');
 		this.setX(0.0);
 		this.setY(0.0);
@@ -32,7 +36,7 @@ class View {
 		this.setBorderRadius(0.0);
 		this.setOpacity(1.0);
 
-		addEventListener('resize', this.layoutSubviews);
+		this.view.addEventListener("resize", this.layoutSubviews);
 
 		this.eventListeners = {};
 	}
@@ -57,14 +61,21 @@ class View {
 
 	addSubview(view) {
 		this.view.appendChild(view.view);
+		view.superview = this;
+		this.subviews.push(view);
 	}
 
 	removeFromSuperview() {
 		this.view.parentNode.removeChild(this.view);
+		var indexOfSelfInParentsSubviews = this.superview.subviews.indexOf(this);
+		console.log(this.superview.subviews);
+		this.superview.subviews.splice(indexOfSelfInParentsSubviews, 1);
+		this.view.superview = null;
 	}
 
 	layoutSubviews() {
 		// Subclass
+		console.log("view: layoutSubviews");
 	}
 
 	// 
@@ -128,13 +139,19 @@ class View {
 		}
 	}
 
+	setTransformWithoutRecursion(transform) {
+		this.transform = transform;
+	}
+
 	setTransform(transform) {
 		this.transform = transform;
+		this.calculateRecursiveTransform();
+		this.layoutWithRecursiveTransform();
 
-		this.view.style.left = this.calculateLeft();
-		this.view.style.top = this.calculateTop();
-		this.view.style.width = this.calculateWidth();
-		this.view.style.height = this.calculateHeight();
+		for (var i = 0; i < this.subviews.length; i++) {
+			this.subviews[i].calculateRecursiveTransform();
+			this.subviews[i].layoutWithRecursiveTransform();
+		}
 	}
 
 	setPosition(position) {
@@ -181,21 +198,40 @@ class View {
 	// Property Helpers
 	// 
 
+	calculateRecursiveTransform() {
+		var cursor = this.superview;
+		var recursiveTransform = Transform.identity().copy();
+		while (cursor) {
+			var cursorTransform = cursor.transform;
+			recursiveTransform.widthScale = recursiveTransform.widthScale * cursorTransform.widthScale;
+			recursiveTransform.heightScale = recursiveTransform.heightScale * cursorTransform.heightScale;
+			cursor = cursor.superview;
+		}
+		this.recursiveTransform = recursiveTransform;
+	}
+
+	layoutWithRecursiveTransform() {
+		this.view.style.left = this.calculateLeft();
+		this.view.style.top = this.calculateTop();
+		this.view.style.width = this.calculateWidth();
+		this.view.style.height = this.calculateHeight();
+	}
+
 	calculateLeft() {
-		var widthDescrepency = this.calculateWidth() - this.width;
-		return this.x + this.transform.x - widthDescrepency/2.0;
+		var widthDescrepency = this.calculateWidth() - this.recursiveTransform.widthScale * this.width;
+		return this.recursiveTransform.widthScale * (this.x + this.transform.x) - widthDescrepency / 2.0;
 	}
 
 	calculateTop() {
-		var heightDescrepency = this.calculateHeight() - this.height;
-		return this.y + this.transform.y - heightDescrepency/2.0;
+		var heightDescrepency = this.calculateHeight() - this.recursiveTransform.heightScale * this.height;
+		return this.recursiveTransform.heightScale * (this.y + this.transform.y) - heightDescrepency/2.0;
 	}
 
 	calculateWidth() {
-		return this.width * this.transform.widthScale;
+		return this.width * (this.transform.widthScale * this.recursiveTransform.widthScale);
 	}
 
 	calculateHeight() {
-		return this.height * this.transform.heightScale;
+		return this.height * (this.transform.heightScale * this.recursiveTransform.heightScale);
 	}
 }

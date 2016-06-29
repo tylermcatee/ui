@@ -23,6 +23,15 @@ class Transform {
 		transform.heightScale = height;
 		return transform;
 	}
+
+	copy() {
+		var transform = new Transform();
+		transform.x = this.x;
+		transform.y = this.y;
+		transform.widthScale = this.widthScale;
+		transform.heightScale = this.heightScale;
+		return transform;
+	}
 }
 
 function interpolatedTransform(min, max, percent) {

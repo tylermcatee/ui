@@ -17,20 +17,22 @@ function fgreater(a,b){return(a-b)>FLOAT_EPISLON;}
 class Transform{constructor(){this.x=0;this.y=0;this.widthScale=1.0;this.heightScale=1.0;}
 static identity(){return new Transform();}
 static translate(x,y){var transform=new Transform();transform.x=x;transform.y=y;return transform;}
-static scale(width,height){var transform=new Transform();transform.widthScale=width;transform.heightScale=height;return transform;}}
+static scale(width,height){var transform=new Transform();transform.widthScale=width;transform.heightScale=height;return transform;}
+copy(){var transform=new Transform();transform.x=this.x;transform.y=this.y;transform.widthScale=this.widthScale;transform.heightScale=this.heightScale;return transform;}}
 function interpolatedTransform(min,max,percent){var x=flerp(min.x,max.x,percent);var y=flerp(min.y,max.y,percent);var widthScale=flerp(min.widthScale,max.widthScale,percent);var heightScale=flerp(min.heightScale,max.heightScale,percent);var transform=new Transform();transform.x=x;transform.y=y;transform.widthScale=widthScale;transform.heightScale=heightScale;return transform;}
 class View{static viewWithFrame(x,y,width,height){var newView=new View();newView.init();newView.setX(x);newView.setY(y);newView.setWidth(width);newView.setHeight(height);return newView;}
-init(){this.view=document.createElement('div');this.view.id=Date.now();this.setTransform(Transform.identity());this.setPosition('absolute');this.setX(0.0);this.setY(0.0);this.setWidth(0.0);this.setHeight(0.0);this.setBackgroundColor('');this.setBorderRadius(0.0);this.setOpacity(1.0);addEventListener('resize',this.layoutSubviews);this.eventListeners={};}
+init(){this.view=document.createElement('div');this.view.id=Date.now();this.superview=null;this.subviews=[];this.recursiveTransform=Transform.identity();this.setTransformWithoutRecursion(Transform.identity());this.setPosition('absolute');this.setX(0.0);this.setY(0.0);this.setWidth(0.0);this.setHeight(0.0);this.setBackgroundColor('');this.setBorderRadius(0.0);this.setOpacity(1.0);this.view.addEventListener("resize",this.layoutSubviews);this.eventListeners={};}
 copy(){var copyView=View.viewWithFrame(this.x,this.y,this.width,this.height);copyView.setBackgroundColor(this.backgroundColor);copyView.setBorderRadius(this.borderRadius);copyView.setOpacity(this.opacity);return copyView;}
 embedIn(element){element.appendChild(this.view);}
-addSubview(view){this.view.appendChild(view.view);}
-removeFromSuperview(){this.view.parentNode.removeChild(this.view);}
-layoutSubviews(){}
+addSubview(view){this.view.appendChild(view.view);view.superview=this;this.subviews.push(view);}
+removeFromSuperview(){this.view.parentNode.removeChild(this.view);var indexOfSelfInParentsSubviews=this.superview.subviews.indexOf(this);console.log(this.superview.subviews);this.superview.subviews.splice(indexOfSelfInParentsSubviews,1);this.view.superview=null;}
+layoutSubviews(){console.log("view: layoutSubviews");}
 addEventHandler(eventHandler){if(this.eventListeners[eventHandler.eventName]==null){this.eventListeners[eventHandler.eventName]=eventHandler;}else{console.log.error("Need to add support for handling collision of eventHanlders, and removing them.");}
 eventHandler.target=this;this.view.addEventListener(eventHandler.eventName,this.callbackEventHandler.bind(this));}
 callbackEventHandler(event){var eventHandler=this.eventListeners[event.type];eventHandler.performAction(event);event.stopPropagation();}
 setKeyValue(key,value){switch(key){case'transform':this.setTransform(value);break;case'position':this.setPosition(value);break;case'x':this.setX(value);break;case'y':this.setY(value);break;case'width':this.setWidth(value);break;case'height':this.setHeight(value);break;case'backgroundColor':this.setBackgroundColor(value);break;case'borderRadius':this.setBorderRadius(value);break;case'opacity':this.setOpacity(value);break;default:console.error("View: setKeyValue not implemented for key "+key);break;}}
-setTransform(transform){this.transform=transform;this.view.style.left=this.calculateLeft();this.view.style.top=this.calculateTop();this.view.style.width=this.calculateWidth();this.view.style.height=this.calculateHeight();}
+setTransformWithoutRecursion(transform){this.transform=transform;}
+setTransform(transform){this.transform=transform;this.calculateRecursiveTransform();this.layoutWithRecursiveTransform();for(var i=0;i<this.subviews.length;i++){this.subviews[i].calculateRecursiveTransform();this.subviews[i].layoutWithRecursiveTransform();}}
 setPosition(position){this.position=position;this.view.style.position=position;}
 setX(x){this.x=x;this.view.style.left=this.calculateLeft();}
 setY(y){this.y=y;this.view.style.top=this.calculateTop();}
@@ -39,10 +41,13 @@ setHeight(height){this.height=height;this.view.style.height=this.calculateHeight
 setBackgroundColor(color){this.backgroundColor=color;this.view.style.background=color;}
 setBorderRadius(radius){this.borderRadius=radius;this.view.style.borderRadius=radius;}
 setOpacity(opacity){this.opacity=opacity;this.view.style.opacity=opacity;}
-calculateLeft(){var widthDescrepency=this.calculateWidth()-this.width;return this.x+this.transform.x-widthDescrepency/2.0;}
-calculateTop(){var heightDescrepency=this.calculateHeight()-this.height;return this.y+this.transform.y-heightDescrepency/2.0;}
-calculateWidth(){return this.width*this.transform.widthScale;}
-calculateHeight(){return this.height*this.transform.heightScale;}}
+calculateRecursiveTransform(){var cursor=this.superview;var recursiveTransform=Transform.identity().copy();while(cursor){var cursorTransform=cursor.transform;recursiveTransform.widthScale=recursiveTransform.widthScale*cursorTransform.widthScale;recursiveTransform.heightScale=recursiveTransform.heightScale*cursorTransform.heightScale;cursor=cursor.superview;}
+this.recursiveTransform=recursiveTransform;}
+layoutWithRecursiveTransform(){this.view.style.left=this.calculateLeft();this.view.style.top=this.calculateTop();this.view.style.width=this.calculateWidth();this.view.style.height=this.calculateHeight();}
+calculateLeft(){var widthDescrepency=this.calculateWidth()-this.recursiveTransform.widthScale*this.width;return this.recursiveTransform.widthScale*(this.x+this.transform.x)-widthDescrepency/2.0;}
+calculateTop(){var heightDescrepency=this.calculateHeight()-this.recursiveTransform.heightScale*this.height;return this.recursiveTransform.heightScale*(this.y+this.transform.y)-heightDescrepency/2.0;}
+calculateWidth(){return this.width*(this.transform.widthScale*this.recursiveTransform.widthScale);}
+calculateHeight(){return this.height*(this.transform.heightScale*this.recursiveTransform.heightScale);}}
 KEYFRAME_KEY=0;KEYFRAME_FROM=1;KEYFRAME_TO=2;Easing={linear:function(t){return t},easeInQuad:function(t){return t*t},easeOutQuad:function(t){return t*(2-t)},easeInOutQuad:function(t){return t<.5?2*t*t:-1+(4-2*t)*t},easeInCubic:function(t){return t*t*t},easeOutCubic:function(t){return(--t)*t*t+1},easeInOutCubic:function(t){return t<.5?4*t*t*t:(t-1)*(2*t-2)*(2*t-2)+1},easeInQuart:function(t){return t*t*t*t},easeOutQuart:function(t){return 1-(--t)*t*t*t},easeInOutQuart:function(t){return t<.5?8*t*t*t*t:1-8*(--t)*t*t*t},easeInQuint:function(t){return t*t*t*t*t},easeOutQuint:function(t){return 1+(--t)*t*t*t*t},easeInOutQuint:function(t){return t<.5?16*t*t*t*t*t:1+16*(--t)*t*t*t*t}}
 class Animation{static animate(view,duration,updateCallback,completion,curve,delay){if(delay==null){delay=0.0;}
 if(curve==null){curve=Easing.linear;}
@@ -65,10 +70,9 @@ constructor(action){this.action=action;this.eventName="";this.target=null;this.l
 performAction(event){this.lastEvent=event;this.action(this);}
 locationInView(view){return{x:this.lastEvent.x,y:this.lastEvent.y};}}
 class ImageView extends View{static imageViewWithFrame(x,y,width,height){var newImageView=new ImageView();newImageView.init();newImageView.setX(x);newImageView.setY(y);newImageView.setWidth(width);newImageView.setHeight(height);return newImageView;}
-init(){this.imageView=document.createElement('img');super.init();this.view.appendChild(this.imageView);}
-setImage(src){this.imageView.src=src;}
-setHeight(height){super.setHeight(height);this.imageView.style.height=height;}
-setWidth(width){super.setWidth(width);this.imageView.style.width=width;}}
+init(){this.imageView=document.createElement('img');super.init();this.view.appendChild(this.imageView);this.view.id='image view';}
+layoutSubviews(){this.imageView.style.height=this.view.height;this.imageView.style.width=this.view.width;}
+setImage(src){this.imageView.src=src;}}
 var __mainWindow;class Window{static mainWindow(){if(__mainWindow==null){__mainWindow=new Window();__mainWindow.setContainee(document.body);}
 return __mainWindow;}
 setContainee(containee){this.containee=containee;}

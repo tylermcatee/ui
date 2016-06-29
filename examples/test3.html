@@ -14,11 +14,13 @@ class MainViewController extends ViewController {
 
 		this.alertBox = View.viewWithFrame(0.0, 0.0, 0.0, 0.0);
 		this.alertBox.setBackgroundColor('#161618');
-		this.alertBox.setOpacity(0.0);
+		// this.alertBox.setOpacity(0.0);
 		this.view.addSubview(this.alertBox);
 
-		this.imageView = ImageView.imageViewWithFrame(0.0, 0.0, 235.0, 175.0);
-		this.imageView.setImage('../assets/cat.jpg');
+		// this.imageView = ImageView.imageViewWithFrame(0.0, 0.0, 235.0, 175.0);
+		this.imageView = View.viewWithFrame(0.0, 0.0, 235.0, 175.0);
+		this.imageView.setBackgroundColor('green');
+		// this.imageView.setImage('../assets/cat.jpg');
 		this.alertBox.addSubview(this.imageView);
 	}
 
@@ -28,6 +30,8 @@ class MainViewController extends ViewController {
 
 	viewDidAppear() {
 		super.viewDidAppear();
+
+		this.alertBox.setTransform(Transform.scale(0.5, 0.5));
 
 		if (this.shouldLayoutAsMobile()) {
 			this.alertBox.setTransform(Transform.scale(1.2, 1.2));
@@ -46,8 +50,8 @@ class MainViewController extends ViewController {
 			this.alertBox.setWidth(800.0);
 			this.alertBox.setHeight(300.0);
 		} else {
-			this.alertBox.setWidth(this.view.width - 40.0);
-			this.alertBox.setHeight(this.view.height - 40.0);
+			this.alertBox.setWidth(this.view.width - 100.0);
+			this.alertBox.setHeight(this.view.height - 100.0);
 		}
 		this.alertBox.setX((this.view.width - this.alertBox.width)/2.0);
 		this.alertBox.setY((this.view.height - this.alertBox.height)/2.0);
