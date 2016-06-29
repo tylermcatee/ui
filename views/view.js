@@ -192,7 +192,6 @@ class View {
 	}
 
 	calculateWidth() {
-		console.log("returning " + this.width + " * " + this.transform.widthScale + " = " + this.width * this.transform.widthScale);
 		return this.width * this.transform.widthScale;
 	}
 

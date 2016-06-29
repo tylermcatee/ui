@@ -16,6 +16,10 @@ class MainViewController extends ViewController {
 		this.alertBox.setBackgroundColor('#161618');
 		this.alertBox.setOpacity(0.0);
 		this.view.addSubview(this.alertBox);
+
+		this.imageView = ImageView.imageViewWithFrame(0.0, 0.0, 235.0, 175.0);
+		this.imageView.setImage('../assets/cat.jpg');
+		this.alertBox.addSubview(this.imageView);
 	}
 
 	shouldLayoutAsMobile() {
@@ -47,6 +51,9 @@ class MainViewController extends ViewController {
 		}
 		this.alertBox.setX((this.view.width - this.alertBox.width)/2.0);
 		this.alertBox.setY((this.view.height - this.alertBox.height)/2.0);
+
+		this.imageView.setX((this.alertBox.width - this.imageView.width)/2.0);
+		this.imageView.setY((this.alertBox.height - this.imageView.height)/2.0);
 	}
 
 	windowDidResize() {
