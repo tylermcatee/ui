@@ -21,15 +21,15 @@ static scale(width,height){var transform=new Transform();transform.widthScale=wi
 copy(){var transform=new Transform();transform.x=this.x;transform.y=this.y;transform.widthScale=this.widthScale;transform.heightScale=this.heightScale;return transform;}}
 function interpolatedTransform(min,max,percent){var x=flerp(min.x,max.x,percent);var y=flerp(min.y,max.y,percent);var widthScale=flerp(min.widthScale,max.widthScale,percent);var heightScale=flerp(min.heightScale,max.heightScale,percent);var transform=new Transform();transform.x=x;transform.y=y;transform.widthScale=widthScale;transform.heightScale=heightScale;return transform;}
 class View{static viewWithFrame(x,y,width,height){var newView=new View();newView.init();newView.setX(x);newView.setY(y);newView.setWidth(width);newView.setHeight(height);return newView;}
-init(){this.view=document.createElement('div');this.view.id=Date.now();this.superview=null;this.subviews=[];this.recursiveTransform=Transform.identity();this.setTransformWithoutRecursion(Transform.identity());this.setPosition('absolute');this.setX(0.0);this.setY(0.0);this.setWidth(0.0);this.setHeight(0.0);this.setBackgroundColor('');this.setBorderRadius(0.0);this.setOpacity(1.0);this.eventListeners={};}
-copy(){var copyView=View.viewWithFrame(this.x,this.y,this.width,this.height);copyView.setTransformWithoutRecursion(this.transform);copyView.recursiveTransform=this.recursiveTransform;copyView.setBackgroundColor(this.backgroundColor);copyView.setBorderRadius(this.borderRadius);copyView.setOpacity(this.opacity);return copyView;}
+init(){this.view=document.createElement('div');this.view.id=Date.now();this.superview=null;this.subviews=[];this.recursiveTransform=Transform.identity();this.setTransformWithoutRecursion(Transform.identity());this.setPosition('absolute');this.setX(0.0);this.setY(0.0);this.setWidth(0.0);this.setHeight(0.0);this.setBackgroundColor('');this.setBorderRadius(0.0);this.setBorderColor('');this.setOpacity(1.0);this.borderColor='black';this.setBorderWidth(0.0);this.eventListeners={};}
+copy(){var copyView=View.viewWithFrame(this.x,this.y,this.width,this.height);copyView.setTransformWithoutRecursion(this.transform);copyView.recursiveTransform=this.recursiveTransform;copyView.setBackgroundColor(this.backgroundColor);copyView.setBorderRadius(this.borderRadius);copyView.setOpacity(this.opacity);copyView.borderWidth=this.borderWidth;copyView.borderColor=this.borderColor;return copyView;}
 embedIn(element){element.appendChild(this.view);}
 addSubview(view){this.view.appendChild(view.view);view.superview=this;this.subviews.push(view);}
 removeFromSuperview(){this.view.parentNode.removeChild(this.view);var indexOfSelfInParentsSubviews=this.superview.subviews.indexOf(this);console.log(this.superview.subviews);this.superview.subviews.splice(indexOfSelfInParentsSubviews,1);this.view.superview=null;}
 addEventHandler(eventHandler){if(this.eventListeners[eventHandler.eventName]==null){this.eventListeners[eventHandler.eventName]=eventHandler;}else{console.log.error("Need to add support for handling collision of eventHanlders, and removing them.");}
 eventHandler.target=this;this.view.addEventListener(eventHandler.eventName,this.callbackEventHandler.bind(this));}
 callbackEventHandler(event){var eventHandler=this.eventListeners[event.type];eventHandler.performAction(event);event.stopPropagation();}
-setKeyValue(key,value){switch(key){case'transform':this.setTransform(value);break;case'position':this.setPosition(value);break;case'x':this.setX(value);break;case'y':this.setY(value);break;case'width':this.setWidth(value);break;case'height':this.setHeight(value);break;case'backgroundColor':this.setBackgroundColor(value);break;case'borderRadius':this.setBorderRadius(value);break;case'opacity':this.setOpacity(value);break;default:console.error("View: setKeyValue not implemented for key "+key);break;}}
+setKeyValue(key,value){switch(key){case'transform':this.setTransform(value);break;case'position':this.setPosition(value);break;case'x':this.setX(value);break;case'y':this.setY(value);break;case'width':this.setWidth(value);break;case'height':this.setHeight(value);break;case'backgroundColor':this.setBackgroundColor(value);break;case'borderRadius':this.setBorderRadius(value);break;case'opacity':this.setOpacity(value);break;case'borderWidth':this.setBorderWidth(value);break;case'borderColor':this.setBorderColor(value);break;default:console.error("View: setKeyValue not implemented for key "+key);break;}}
 setTransformWithoutRecursion(transform){this.transform=transform;}
 setTransform(transform){this.transform=transform;this.calculateRecursiveTransform();this.layoutWithRecursiveTransform();for(var i=0;i<this.subviews.length;i++){this.subviews[i].calculateRecursiveTransform();this.subviews[i].layoutWithRecursiveTransform();}}
 setPosition(position){this.position=position;this.view.style.position=position;}
@@ -40,13 +40,16 @@ setHeight(height){this.height=height;this.view.style.height=this.calculateHeight
 setBackgroundColor(color){this.backgroundColor=color;this.view.style.background=color;}
 setBorderRadius(radius){this.borderRadius=radius;this.view.style.borderRadius=radius;}
 setOpacity(opacity){this.opacity=opacity;this.view.style.opacity=opacity;}
+setBorderWidth(borderWidth){this.borderWidth=borderWidth;this.updateBorder();}
+setBorderColor(borderColor){this.borderColor=borderColor;this.updateBorder();}
 calculateRecursiveTransform(){var cursor=this.superview;var recursiveTransform=Transform.identity().copy();while(cursor){var cursorTransform=cursor.transform;recursiveTransform.widthScale=recursiveTransform.widthScale*cursorTransform.widthScale;recursiveTransform.heightScale=recursiveTransform.heightScale*cursorTransform.heightScale;cursor=cursor.superview;}
 this.recursiveTransform=recursiveTransform;}
 layoutWithRecursiveTransform(){this.view.style.left=this.calculateLeft();this.view.style.top=this.calculateTop();this.view.style.width=this.calculateWidth();this.view.style.height=this.calculateHeight();}
 calculateLeft(){var widthDescrepency=this.calculateWidth()-this.recursiveTransform.widthScale*this.width;return this.recursiveTransform.widthScale*(this.x+this.transform.x)-widthDescrepency/2.0;}
 calculateTop(){var heightDescrepency=this.calculateHeight()-this.recursiveTransform.heightScale*this.height;return this.recursiveTransform.heightScale*(this.y+this.transform.y)-heightDescrepency/2.0;}
 calculateWidth(){return this.width*(this.transform.widthScale*this.recursiveTransform.widthScale);}
-calculateHeight(){return this.height*(this.transform.heightScale*this.recursiveTransform.heightScale);}}
+calculateHeight(){return this.height*(this.transform.heightScale*this.recursiveTransform.heightScale);}
+updateBorder(){if(this.borderWidth==0.0){this.view.style.border='none';}else{this.view.style.border=this.borderWidth+"px solid "+this.borderColor;}}}
 KEYFRAME_KEY=0;KEYFRAME_FROM=1;KEYFRAME_TO=2;Easing={linear:function(t){return t},easeInQuad:function(t){return t*t},easeOutQuad:function(t){return t*(2-t)},easeInOutQuad:function(t){return t<.5?2*t*t:-1+(4-2*t)*t},easeInCubic:function(t){return t*t*t},easeOutCubic:function(t){return(--t)*t*t+1},easeInOutCubic:function(t){return t<.5?4*t*t*t:(t-1)*(2*t-2)*(2*t-2)+1},easeInQuart:function(t){return t*t*t*t},easeOutQuart:function(t){return 1-(--t)*t*t*t},easeInOutQuart:function(t){return t<.5?8*t*t*t*t:1-8*(--t)*t*t*t},easeInQuint:function(t){return t*t*t*t*t},easeOutQuint:function(t){return 1+(--t)*t*t*t*t},easeInOutQuint:function(t){return t<.5?16*t*t*t*t*t:1+16*(--t)*t*t*t*t}}
 class Animation{static animate(view,duration,updateCallback,completion,curve,delay){if(delay==null){delay=0.0;}
 if(curve==null){curve=Easing.linear;}
@@ -56,8 +59,8 @@ if(completion!=null){completion();}
 return;}
 requestAnimationFrame(update);for(var i=0;i<keyframes.length;i++){var keyframe=keyframes[i];var interpolatingFunction=Animation._interpolatingFunctionForKey(keyframe[0]);var interpolatedPosition=interpolatingFunction(keyframe[KEYFRAME_FROM],keyframe[KEYFRAME_TO],timeValue);view.setKeyValue(keyframe[KEYFRAME_KEY],interpolatedPosition);}}
 requestAnimationFrame(update);}
-static _interpolatingFunctionForKey(key){switch(key){case'backgroundColor':return interpolatedColor;break;case'transform':return interpolatedTransform;break;default:return flerp;break;}}
-static _keyframes(oldView,newView){var keys=['transform','x','y','width','height','backgroundColor','borderRadius','opacity'];var keyframes=[];for(var i=0;i<keys.length;i++){var key=keys[i];var oldValue=oldView[key];var newValue=newView[key];if(!fequal(oldValue,newValue)){keyframes.push([key,oldValue,newValue]);}}
+static _interpolatingFunctionForKey(key){switch(key){case'backgroundColor':case'borderColor':return interpolatedColor;break;case'transform':return interpolatedTransform;break;default:return flerp;break;}}
+static _keyframes(oldView,newView){var keys=['transform','x','y','width','height','backgroundColor','borderRadius','opacity','borderWidth','borderColor'];var keyframes=[];for(var i=0;i<keys.length;i++){var key=keys[i];var oldValue=oldView[key];var newValue=newView[key];if(!fequal(oldValue,newValue)){keyframes.push([key,oldValue,newValue]);}}
 return keyframes;}}
 class ViewController{constructor(){this.view=this.loadView();this.viewDidLoad();}
 loadView(){return View.viewWithFrame(0,0,0,0);}
@@ -72,7 +75,7 @@ class ImageView extends View{static imageViewWithFrame(x,y,width,height){var new
 init(){this.imageView=document.createElement('img');this.imageView.style.width="100%";this.imageView.style.height="100%";this.imageView.style.position='relative';super.init();this.view.appendChild(this.imageView);}
 setImage(src){this.imageView.src=src;}}
 class Label extends View{static labelWithFrame(x,y,width,height){var newLabel=new Label();newLabel.init();newLabel.setX(x);newLabel.setY(y);newLabel.setWidth(width);newLabel.setHeight(height);return newLabel}
-init(){super.init();}
+init(){super.init();this.view.id='label';}
 setText(text){this.text=text;this.view.innerHTML=text;}
 setFontSize(fontSize){this.fontSize=fontSize;this.view.style.fontSize=fontSize;}
 setFontColor(fontColor){this.fontColor=fontColor;this.view.style.color=fontColor;}

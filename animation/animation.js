@@ -91,6 +91,7 @@ class Animation {
 	static _interpolatingFunctionForKey(key) {
 		switch (key) {
 			case 'backgroundColor':
+			case 'borderColor':
 				return interpolatedColor;
 				break;
 			case 'transform':
@@ -103,7 +104,7 @@ class Animation {
 	}
 
 	static _keyframes(oldView, newView) {
-		var keys = ['transform', 'x', 'y', 'width', 'height', 'backgroundColor', 'borderRadius', 'opacity'];
+		var keys = ['transform', 'x', 'y', 'width', 'height', 'backgroundColor', 'borderRadius', 'opacity', 'borderWidth', 'borderColor'];
 		var keyframes = [];
 		for (var i = 0; i < keys.length; i++) {
 			var key = keys[i];

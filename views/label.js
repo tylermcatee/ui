@@ -11,6 +11,7 @@ class Label extends View {
 
 	init() {
 		super.init();
+		this.view.id = 'label';
 	}
 
 	setText(text) {

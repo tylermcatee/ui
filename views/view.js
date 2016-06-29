@@ -34,7 +34,11 @@ class View {
 		this.setHeight(0.0);
 		this.setBackgroundColor('');
 		this.setBorderRadius(0.0);
+		this.setBorderColor('');
 		this.setOpacity(1.0);
+
+		this.borderColor = 'black';
+		this.setBorderWidth(0.0);
 
 		this.eventListeners = {};
 	}
@@ -52,6 +56,8 @@ class View {
 		copyView.setBackgroundColor(this.backgroundColor);
 		copyView.setBorderRadius(this.borderRadius);
 		copyView.setOpacity(this.opacity);
+		copyView.borderWidth = this.borderWidth;
+		copyView.borderColor = this.borderColor;
 		return copyView;
 	}
 
@@ -128,6 +134,12 @@ class View {
 			case 'opacity':
 				this.setOpacity(value);
 				break;
+			case 'borderWidth':
+				this.setBorderWidth(value);
+				break;
+			case 'borderColor':
+				this.setBorderColor(value);
+				break;
 			default:
 				console.error("View: setKeyValue not implemented for key " + key);
 				break;
@@ -189,6 +201,16 @@ class View {
 		this.view.style.opacity = opacity;
 	}
 
+	setBorderWidth(borderWidth) {
+		this.borderWidth = borderWidth;
+		this.updateBorder();
+	}
+
+	setBorderColor(borderColor) {
+		this.borderColor = borderColor;
+		this.updateBorder();
+	}
+
 	// 
 	// Property Helpers
 	// 
@@ -228,5 +250,13 @@ class View {
 
 	calculateHeight() {
 		return this.height * (this.transform.heightScale * this.recursiveTransform.heightScale);
+	}
+
+	updateBorder() {
+		if (this.borderWidth == 0.0) {
+			this.view.style.border = 'none';
+		} else {
+			this.view.style.border = this.borderWidth + "px solid " + this.borderColor;
+		}
 	}
 }

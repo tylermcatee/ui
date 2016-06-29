@@ -14,7 +14,7 @@ class MainViewController extends ViewController {
 
 		this.alertBox = View.viewWithFrame(0.0, 0.0, 0.0, 0.0);
 		this.alertBox.setBackgroundColor('#161618');
-		// this.alertBox.setOpacity(0.0);
+		this.alertBox.setOpacity(0.0);
 		this.view.addSubview(this.alertBox);
 
 		this.imageView = ImageView.imageViewWithFrame(0.0, 0.0, 235.0, 175.0);
@@ -27,7 +27,19 @@ class MainViewController extends ViewController {
 		this.label.setFontSize(90.0);
 		this.label.setFontColor('white');
 		this.label.setOpacity(0.0);
+		this.label.setBorderColor('red');
+		this.label.setBorderWidth(1.0);
 		this.alertBox.addSubview(this.label);
+
+		var viewClickHandler = EventHandler.clickHandler(this.handleClick.bind(this));
+        this.label.addEventHandler(viewClickHandler);
+	}
+
+	handleClick(clickHandler) {
+		Animation.animate(this.label, 0.5, function(view) {
+			view.setBorderColor('blue');
+			view.setBorderWidth(5.0);
+		});
 	}
 
 	shouldLayoutAsMobile() {
