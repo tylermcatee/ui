@@ -58,7 +58,7 @@ requestAnimationFrame(update);for(var i=0;i<keyframes.length;i++){var keyframe=k
 requestAnimationFrame(update);}
 static _interpolatingFunctionForKey(key){switch(key){case'backgroundColor':return interpolatedColor;break;case'transform':return interpolatedTransform;break;default:return flerp;break;}}
 static _keyframes(oldView,newView){var keys=['transform','x','y','width','height','backgroundColor','borderRadius','opacity'];var keyframes=[];for(var i=0;i<keys.length;i++){var key=keys[i];var oldValue=oldView[key];var newValue=newView[key];if(!fequal(oldValue,newValue)){keyframes.push([key,oldValue,newValue]);}}
-console.log("ANIM");console.log(keyframes);console.log("\n\n");return keyframes;}}
+return keyframes;}}
 class ViewController{constructor(){this.view=this.loadView();this.viewDidLoad();}
 loadView(){return View.viewWithFrame(0,0,0,0);}
 viewDidLoad(){return;}
@@ -71,6 +71,12 @@ locationInView(view){return{x:this.lastEvent.x,y:this.lastEvent.y};}}
 class ImageView extends View{static imageViewWithFrame(x,y,width,height){var newImageView=new ImageView();newImageView.init();newImageView.setX(x);newImageView.setY(y);newImageView.setWidth(width);newImageView.setHeight(height);return newImageView;}
 init(){this.imageView=document.createElement('img');this.imageView.style.width="100%";this.imageView.style.height="100%";this.imageView.style.position='relative';super.init();this.view.appendChild(this.imageView);}
 setImage(src){this.imageView.src=src;}}
+class Label extends View{static labelWithFrame(x,y,width,height){var newLabel=new Label();newLabel.init();newLabel.setX(x);newLabel.setY(y);newLabel.setWidth(width);newLabel.setHeight(height);return newLabel}
+init(){super.init();}
+setText(text){this.text=text;this.view.innerHTML=text;}
+setFontSize(fontSize){this.fontSize=fontSize;this.view.style.fontSize=fontSize;}
+setFontColor(fontColor){this.fontColor=fontColor;this.view.style.color=fontColor;}
+setTextAlign(textAlign){this.textAlign=textAlign;this.view.style.textAlign=textAlign;}}
 var __mainWindow;class Window{static mainWindow(){if(__mainWindow==null){__mainWindow=new Window();__mainWindow.setContainee(document.body);}
 return __mainWindow;}
 setContainee(containee){this.containee=containee;}

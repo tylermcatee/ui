@@ -20,6 +20,14 @@ class MainViewController extends ViewController {
 		this.imageView = ImageView.imageViewWithFrame(0.0, 0.0, 235.0, 175.0);
 		this.imageView.setImage('../assets/cat.jpg');
 		this.alertBox.addSubview(this.imageView);
+
+		this.label = Label.labelWithFrame(0, 0, 235.0, 110.0);
+		this.label.setText("CAT");
+		this.label.setTextAlign('center');
+		this.label.setFontSize(90.0);
+		this.label.setFontColor('white');
+		this.label.setOpacity(0.0);
+		this.alertBox.addSubview(this.label);
 	}
 
 	shouldLayoutAsMobile() {
@@ -37,24 +45,19 @@ class MainViewController extends ViewController {
 			this.alertBox.setTransform(Transform.translate(0.0, 100.0));
 		}
 
-		Animation.animate(this.alertBox, 0.75, function(view) {
+		Animation.animate(this.alertBox, 1.0, function(view) {
 			view.setOpacity(1.0);
 			view.setTransform(Transform.identity());
 		}, null /* completion */, Easing.easeOutCubic);
 
 		this.imageView.setTransform(Transform.identity());
-		Animation.animate(this.imageView, 0.75, (function(view) {
+		Animation.animate(this.imageView, 0.5, (function(view) {
 			this.applyAppearanceTransformToView(view);
-		}).bind(this), null /* completion */, Easing.easeInCubic);
-
-		var viewClickHandler = EventHandler.clickHandler(this.handleClick.bind(this));
-		this.imageView.addEventHandler(viewClickHandler);
-	}
-
-	handleClick(clickHandler) {
-		Animation.animate(this.imageView, 0.35, function(view) {
-			view.setOpacity(0.0);
-		}, null, Easing.easeOutCubic);
+		}).bind(this), (function() {
+			Animation.animate(this.label, 0.3, function(view) {
+				view.setOpacity(1.0);
+			}, null, Easing.easeOutCubic);
+		}).bind(this), Easing.easeInCubic);
 	}
 
 	applyAppearanceTransformToView(view) {
@@ -68,18 +71,25 @@ class MainViewController extends ViewController {
 	}
 
 	layoutAlertBox() {
-		if (this.view.width - 40.0 > 800.0) {
-			this.alertBox.setWidth(800.0);
-			this.alertBox.setHeight(300.0);
-		} else {
+		var labelDX = 0.0;
+		var labelDY = 0.0;
+		if (this.shouldLayoutAsMobile()) {
 			this.alertBox.setWidth(this.view.width - 100.0);
 			this.alertBox.setHeight(this.view.height - 100.0);
+			labelDY = 100.0;
+		} else {
+			this.alertBox.setWidth(800.0);
+			this.alertBox.setHeight(300.0);
+			labelDX = 150.0;
 		}
 		this.alertBox.setX((this.view.width - this.alertBox.width)/2.0);
 		this.alertBox.setY((this.view.height - this.alertBox.height)/2.0);
 
 		this.imageView.setX((this.alertBox.width - this.imageView.width)/2.0);
 		this.imageView.setY((this.alertBox.height - this.imageView.height)/2.0);
+
+		this.label.setX((this.alertBox.width - this.label.width)/2.0 + labelDX);
+		this.label.setY((this.alertBox.height - this.label.height)/2.0 + labelDY);
 
 		this.applyAppearanceTransformToView(this.imageView);
 	}
