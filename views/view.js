@@ -47,6 +47,8 @@ class View {
 		// This sets position, x, y, width, height
 		var copyView = View.viewWithFrame(this.x, this.y, this.width, this.height);
 		// Copy the rest of the parameters
+		copyView.setTransformWithoutRecursion(this.transform);
+		copyView.recursiveTransform = this.recursiveTransform;
 		copyView.setBackgroundColor(this.backgroundColor);
 		copyView.setBorderRadius(this.borderRadius);
 		copyView.setOpacity(this.opacity);

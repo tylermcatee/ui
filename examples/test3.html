@@ -46,6 +46,15 @@ class MainViewController extends ViewController {
 		Animation.animate(this.imageView, 0.75, (function(view) {
 			this.applyAppearanceTransformToView(view);
 		}).bind(this), null /* completion */, Easing.easeInCubic);
+
+		var viewClickHandler = EventHandler.clickHandler(this.handleClick.bind(this));
+		this.imageView.addEventHandler(viewClickHandler);
+	}
+
+	handleClick(clickHandler) {
+		Animation.animate(this.imageView, 0.35, function(view) {
+			view.setOpacity(0.0);
+		}, null, Easing.easeOutCubic);
 	}
 
 	applyAppearanceTransformToView(view) {

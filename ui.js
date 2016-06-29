@@ -22,7 +22,7 @@ copy(){var transform=new Transform();transform.x=this.x;transform.y=this.y;trans
 function interpolatedTransform(min,max,percent){var x=flerp(min.x,max.x,percent);var y=flerp(min.y,max.y,percent);var widthScale=flerp(min.widthScale,max.widthScale,percent);var heightScale=flerp(min.heightScale,max.heightScale,percent);var transform=new Transform();transform.x=x;transform.y=y;transform.widthScale=widthScale;transform.heightScale=heightScale;return transform;}
 class View{static viewWithFrame(x,y,width,height){var newView=new View();newView.init();newView.setX(x);newView.setY(y);newView.setWidth(width);newView.setHeight(height);return newView;}
 init(){this.view=document.createElement('div');this.view.id=Date.now();this.superview=null;this.subviews=[];this.recursiveTransform=Transform.identity();this.setTransformWithoutRecursion(Transform.identity());this.setPosition('absolute');this.setX(0.0);this.setY(0.0);this.setWidth(0.0);this.setHeight(0.0);this.setBackgroundColor('');this.setBorderRadius(0.0);this.setOpacity(1.0);this.eventListeners={};}
-copy(){var copyView=View.viewWithFrame(this.x,this.y,this.width,this.height);copyView.setBackgroundColor(this.backgroundColor);copyView.setBorderRadius(this.borderRadius);copyView.setOpacity(this.opacity);return copyView;}
+copy(){var copyView=View.viewWithFrame(this.x,this.y,this.width,this.height);copyView.setTransformWithoutRecursion(this.transform);copyView.recursiveTransform=this.recursiveTransform;copyView.setBackgroundColor(this.backgroundColor);copyView.setBorderRadius(this.borderRadius);copyView.setOpacity(this.opacity);return copyView;}
 embedIn(element){element.appendChild(this.view);}
 addSubview(view){this.view.appendChild(view.view);view.superview=this;this.subviews.push(view);}
 removeFromSuperview(){this.view.parentNode.removeChild(this.view);var indexOfSelfInParentsSubviews=this.superview.subviews.indexOf(this);console.log(this.superview.subviews);this.superview.subviews.splice(indexOfSelfInParentsSubviews,1);this.view.superview=null;}
@@ -58,7 +58,7 @@ requestAnimationFrame(update);for(var i=0;i<keyframes.length;i++){var keyframe=k
 requestAnimationFrame(update);}
 static _interpolatingFunctionForKey(key){switch(key){case'backgroundColor':return interpolatedColor;break;case'transform':return interpolatedTransform;break;default:return flerp;break;}}
 static _keyframes(oldView,newView){var keys=['transform','x','y','width','height','backgroundColor','borderRadius','opacity'];var keyframes=[];for(var i=0;i<keys.length;i++){var key=keys[i];var oldValue=oldView[key];var newValue=newView[key];if(!fequal(oldValue,newValue)){keyframes.push([key,oldValue,newValue]);}}
-return keyframes;}}
+console.log("ANIM");console.log(keyframes);console.log("\n\n");return keyframes;}}
 class ViewController{constructor(){this.view=this.loadView();this.viewDidLoad();}
 loadView(){return View.viewWithFrame(0,0,0,0);}
 viewDidLoad(){return;}
