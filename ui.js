@@ -21,12 +21,11 @@ static scale(width,height){var transform=new Transform();transform.widthScale=wi
 copy(){var transform=new Transform();transform.x=this.x;transform.y=this.y;transform.widthScale=this.widthScale;transform.heightScale=this.heightScale;return transform;}}
 function interpolatedTransform(min,max,percent){var x=flerp(min.x,max.x,percent);var y=flerp(min.y,max.y,percent);var widthScale=flerp(min.widthScale,max.widthScale,percent);var heightScale=flerp(min.heightScale,max.heightScale,percent);var transform=new Transform();transform.x=x;transform.y=y;transform.widthScale=widthScale;transform.heightScale=heightScale;return transform;}
 class View{static viewWithFrame(x,y,width,height){var newView=new View();newView.init();newView.setX(x);newView.setY(y);newView.setWidth(width);newView.setHeight(height);return newView;}
-init(){this.view=document.createElement('div');this.view.id=Date.now();this.superview=null;this.subviews=[];this.recursiveTransform=Transform.identity();this.setTransformWithoutRecursion(Transform.identity());this.setPosition('absolute');this.setX(0.0);this.setY(0.0);this.setWidth(0.0);this.setHeight(0.0);this.setBackgroundColor('');this.setBorderRadius(0.0);this.setOpacity(1.0);this.view.addEventListener("resize",this.layoutSubviews);this.eventListeners={};}
+init(){this.view=document.createElement('div');this.view.id=Date.now();this.superview=null;this.subviews=[];this.recursiveTransform=Transform.identity();this.setTransformWithoutRecursion(Transform.identity());this.setPosition('absolute');this.setX(0.0);this.setY(0.0);this.setWidth(0.0);this.setHeight(0.0);this.setBackgroundColor('');this.setBorderRadius(0.0);this.setOpacity(1.0);this.eventListeners={};}
 copy(){var copyView=View.viewWithFrame(this.x,this.y,this.width,this.height);copyView.setBackgroundColor(this.backgroundColor);copyView.setBorderRadius(this.borderRadius);copyView.setOpacity(this.opacity);return copyView;}
 embedIn(element){element.appendChild(this.view);}
 addSubview(view){this.view.appendChild(view.view);view.superview=this;this.subviews.push(view);}
 removeFromSuperview(){this.view.parentNode.removeChild(this.view);var indexOfSelfInParentsSubviews=this.superview.subviews.indexOf(this);console.log(this.superview.subviews);this.superview.subviews.splice(indexOfSelfInParentsSubviews,1);this.view.superview=null;}
-layoutSubviews(){console.log("view: layoutSubviews");}
 addEventHandler(eventHandler){if(this.eventListeners[eventHandler.eventName]==null){this.eventListeners[eventHandler.eventName]=eventHandler;}else{console.log.error("Need to add support for handling collision of eventHanlders, and removing them.");}
 eventHandler.target=this;this.view.addEventListener(eventHandler.eventName,this.callbackEventHandler.bind(this));}
 callbackEventHandler(event){var eventHandler=this.eventListeners[event.type];eventHandler.performAction(event);event.stopPropagation();}
@@ -70,8 +69,7 @@ constructor(action){this.action=action;this.eventName="";this.target=null;this.l
 performAction(event){this.lastEvent=event;this.action(this);}
 locationInView(view){return{x:this.lastEvent.x,y:this.lastEvent.y};}}
 class ImageView extends View{static imageViewWithFrame(x,y,width,height){var newImageView=new ImageView();newImageView.init();newImageView.setX(x);newImageView.setY(y);newImageView.setWidth(width);newImageView.setHeight(height);return newImageView;}
-init(){this.imageView=document.createElement('img');super.init();this.view.appendChild(this.imageView);this.view.id='image view';}
-layoutSubviews(){this.imageView.style.height=this.view.height;this.imageView.style.width=this.view.width;}
+init(){this.imageView=document.createElement('img');this.imageView.style.width="100%";this.imageView.style.height="100%";this.imageView.style.position='relative';super.init();this.view.appendChild(this.imageView);}
 setImage(src){this.imageView.src=src;}}
 var __mainWindow;class Window{static mainWindow(){if(__mainWindow==null){__mainWindow=new Window();__mainWindow.setContainee(document.body);}
 return __mainWindow;}

@@ -12,14 +12,11 @@ class ImageView extends View {
 
 	init() {
 		this.imageView = document.createElement('img');
+		this.imageView.style.width = "100%";
+		this.imageView.style.height = "100%";
+		this.imageView.style.position = 'relative';
 		super.init();
 		this.view.appendChild(this.imageView);
-		this.view.id = 'image view';
-	}
-
-	layoutSubviews() {
-		this.imageView.style.height = this.view.height;
-		this.imageView.style.width = this.view.width;
 	}
 
 	setImage(src) {

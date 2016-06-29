@@ -36,8 +36,6 @@ class View {
 		this.setBorderRadius(0.0);
 		this.setOpacity(1.0);
 
-		this.view.addEventListener("resize", this.layoutSubviews);
-
 		this.eventListeners = {};
 	}
 
@@ -71,11 +69,6 @@ class View {
 		console.log(this.superview.subviews);
 		this.superview.subviews.splice(indexOfSelfInParentsSubviews, 1);
 		this.view.superview = null;
-	}
-
-	layoutSubviews() {
-		// Subclass
-		console.log("view: layoutSubviews");
 	}
 
 	// 
