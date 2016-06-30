@@ -19,6 +19,31 @@ class Label extends View {
 		return {'width' : dummyWidth, 'height' : dummyHeight};
 	}
 
+	static testDummy() {
+		var testDummyInstance = testDummy.testDummy || function () {
+			testDummy.testDummy = document.createElement("div");
+			testDummy.testDummy.style.position = 'absolute';
+			testDummy.testDummy.style.top = -1000;
+			testDummy.testDummy.style.left = -1000;
+			testDummy.testDummy.style.height = 'auto';
+			testDummy.testDummy.style.width = 'auto';
+			testDummy.testDummy.style.whiteSpace = 'none';
+			document.body.appendChild(testDummy.testDummy);
+			return testDummy.testDummy;
+		}();
+		return testDummyInstance;
+	}
+
+	heightForWidth() {
+		var test = Label.testDummy();
+		test.style.height = 'auto';
+		test.style.width = this.width;
+		test.style.fontSize = this.fontSize;
+		test.style.fontFamily = this.fontFamily;
+		test.innerHTML = this.text;
+		return test.clientHeight + 1;
+	}
+
 	static labelWithFrame(x, y, width, height) {
 		var newLabel = new Label();
 		newLabel.init();
