@@ -291,16 +291,21 @@ for item in os.listdir(rootdir):
 		print("Will not compile: " + item)
 
 print("Writing to ui.js")
-minified = jsmin(output_text)
+
+minify = True
+if len(sys.argv) > 1:
+    minify_flag = sys.argv[1]
+    if minify_flag == '0' or minify_flag == 'no' or minify_flag == 'false':
+        print("NO MINIFY")
+        minify = False
+
+if minify:
+    print("MINIFY")
+    output_text = jsmin(output_text)
 output = open('ui.js', 'r+')
 output.seek(0)
-output.write(minified)
+output.write(output_text)
 output.truncate()
 output.close()
 print("Done")
-
-if len(sys.argv) > 1:
-    copy_dst = sys.argv[1]
-    print("Copying to " + copy_dst)
-    copyfile('ui.js', copy_dst)
 

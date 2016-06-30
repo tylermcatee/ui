@@ -1,3 +1,28 @@
+var DummyLabel = (function () {
+    var instance;
+ 
+    function createInstance() {
+        var testDummy = document.createElement("div");
+		testDummy.style.position = 'absolute';
+		testDummy.style.top = -1000;
+		testDummy.style.left = -1000;
+		testDummy.style.height = 'auto';
+		testDummy.style.width = 'auto';
+		testDummy.style.whiteSpace = 'none';
+		document.body.appendChild(testDummy);
+        return testDummy;
+    }
+ 
+    return {
+        getInstance: function () {
+            if (!instance) {
+                instance = createInstance();
+            }
+            return instance;
+        }
+    };
+})();
+
 class Label extends View {
 
 	static textSize(text, fontSize) {
@@ -19,23 +44,8 @@ class Label extends View {
 		return {'width' : dummyWidth, 'height' : dummyHeight};
 	}
 
-	static testDummy() {
-		var testDummyInstance = testDummy.testDummy || function () {
-			testDummy.testDummy = document.createElement("div");
-			testDummy.testDummy.style.position = 'absolute';
-			testDummy.testDummy.style.top = -1000;
-			testDummy.testDummy.style.left = -1000;
-			testDummy.testDummy.style.height = 'auto';
-			testDummy.testDummy.style.width = 'auto';
-			testDummy.testDummy.style.whiteSpace = 'none';
-			document.body.appendChild(testDummy.testDummy);
-			return testDummy.testDummy;
-		}();
-		return testDummyInstance;
-	}
-
 	heightForWidth() {
-		var test = Label.testDummy();
+		var test = DummyLabel.getInstance();
 		test.style.height = 'auto';
 		test.style.width = this.width;
 		test.style.fontSize = this.fontSize;
