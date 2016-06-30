@@ -15,7 +15,7 @@ class View {
 	}
 
 	// 
-	// Internal init
+	// Initializer
 	//
 
 	init() {
@@ -43,21 +43,29 @@ class View {
 	}
 
 	// 
-	//  Not yet sorted
+	// Copying
 	// 
 
 	copy() {
 		// This sets position, x, y, width, height
 		var copyView = View.viewWithFrame(this.x, this.y, this.width, this.height);
+		this.copyParams(copyView);
+		return copyView;
+	}
+
+	copyParams(copyView) {
 		// Copy the rest of the parameters
 		copyView.setTransform(this.transform);
 		copyView.setBackgroundColor(this.backgroundColor);
 		copyView.setBorderRadius(this.borderRadius);
 		copyView.setOpacity(this.opacity);
-		copyView.borderWidth = this.borderWidth;
-		copyView.borderColor = this.borderColor;
-		return copyView;
+		copyView.setBorderWidth(this.borderWidth);
+		copyView.setBorderColor(this.borderColor);
 	}
+
+	// 
+	//  Not yet sorted
+	// 
 
 	embedIn(element) {
 		element.appendChild(this.view);

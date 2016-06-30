@@ -1,22 +1,4 @@
 class Label extends View {
-	static labelWithFrame(x, y, width, height) {
-		var newLabel = new Label();
-		newLabel.init();
-		newLabel.setX(x);
-		newLabel.setY(y);
-		newLabel.setWidth(width);
-		newLabel.setHeight(height);
-		newLabel.text = '';
-		newLabel.fontSize = 16.0;
-		newLabel.fontColor = 'black';
-		newLabel.textAlign = 'left';
-		return newLabel;
-	}
-
-	init() {
-		super.init();
-		this.view.id = 'label';
-	}
 
 	static textSize(text, fontSize) {
 		var testDummy = textSize.testDummy || function() {
@@ -37,9 +19,50 @@ class Label extends View {
 		return {'width' : dummyWidth, 'height' : dummyHeight};
 	}
 
+	static labelWithFrame(x, y, width, height) {
+		var newLabel = new Label();
+		newLabel.init();
+		newLabel.setX(x);
+		newLabel.setY(y);
+		newLabel.setWidth(width);
+		newLabel.setHeight(height);
+		return newLabel;
+	}
+
+	init() {
+		super.init();
+		this.text = '';
+		this.setFontFamily('monospace');
+		this.setFontSize(16.0);
+		this.setFontColor('black');
+		this.setFontWeight('normal');
+		this.setTextAlign('left');
+	}
+
+	copy() {
+		var copyView = Label.labelWithFrame(this.x, this.y, this.width, this.height);
+		this.copyParams(copyView);
+		return copyView;
+	}
+
+	copyParams(copyView) {
+		super.copyParams(copyView);
+		copyView.setText(this.text);
+		copyView.setFontFamily(this.fontFamily);
+		copyView.setFontSize(this.fontSize);
+		copyView.setFontColor(this.fontColor);
+		copyView.setFontWeight(this.fontWeight);
+		copyView.setTextAlign(this.textAlign);
+	}
+
 	setText(text) {
 		this.text = text;
 		this.view.innerHTML = text;
+	}
+
+	setFontFamily(fontFamily) {
+		this.fontFamily = fontFamily;
+		this.view.style.fontFamily = fontFamily;
 	}
 
 	setFontSize(fontSize) {
@@ -50,6 +73,11 @@ class Label extends View {
 	setFontColor(fontColor) {
 		this.fontColor = fontColor;
 		this.view.style.color = fontColor;
+	}
+
+	setFontWeight(fontWeight) {
+		this.fontWeight = fontWeight;
+		this.view.style.fontWeight = fontWeight;
 	}
 
 	setTextAlign(textAlign) {
