@@ -25,8 +25,7 @@ class View {
 		this.superview = null;
 		this.subviews = [];
 
-		this.recursiveTransform = Transform.identity();
-		this.setTransformWithoutRecursion(Transform.identity());
+		this.setTransform(Transform.identity());
 		this.setPosition('absolute');
 		this.setX(0.0);
 		this.setY(0.0);
@@ -51,8 +50,7 @@ class View {
 		// This sets position, x, y, width, height
 		var copyView = View.viewWithFrame(this.x, this.y, this.width, this.height);
 		// Copy the rest of the parameters
-		copyView.setTransformWithoutRecursion(this.transform);
-		copyView.recursiveTransform = this.recursiveTransform;
+		copyView.setTransform(this.transform);
 		copyView.setBackgroundColor(this.backgroundColor);
 		copyView.setBorderRadius(this.borderRadius);
 		copyView.setOpacity(this.opacity);
@@ -146,19 +144,14 @@ class View {
 		}
 	}
 
-	setTransformWithoutRecursion(transform) {
-		this.transform = transform;
-	}
-
 	setTransform(transform) {
 		this.transform = transform;
-		this.calculateRecursiveTransform();
-		this.layoutWithRecursiveTransform();
-
-		for (var i = 0; i < this.subviews.length; i++) {
-			this.subviews[i].calculateRecursiveTransform();
-			this.subviews[i].layoutWithRecursiveTransform();
-		}
+		var transformString = transform.asString();
+		this.view.style.webkitTransform = transformString;
+	    this.view.style.MozTransform = transformString;
+	    this.view.style.msTransform = transformString;
+	    this.view.style.OTransform = transformString;
+	    this.view.style.transform = transformString;
 	}
 
 	setPosition(position) {
@@ -168,22 +161,22 @@ class View {
 
 	setX(x) {
 		this.x = x;
-		this.view.style.left = this.calculateLeft();
+		this.view.style.left = x;
 	}
 
 	setY(y) {
 		this.y = y;
-		this.view.style.top = this.calculateTop();
+		this.view.style.top = y;
 	}
 
 	setWidth(width) {
 		this.width = width;
-		this.view.style.width = this.calculateWidth();
+		this.view.style.width = width;
 	}
 
 	setHeight(height) {
 		this.height = height;
-		this.view.style.height = this.calculateHeight();
+		this.view.style.height = height;
 	}
 
 	setBackgroundColor(color) {
@@ -214,43 +207,6 @@ class View {
 	// 
 	// Property Helpers
 	// 
-
-	calculateRecursiveTransform() {
-		var cursor = this.superview;
-		var recursiveTransform = Transform.identity().copy();
-		while (cursor) {
-			var cursorTransform = cursor.transform;
-			recursiveTransform.widthScale = recursiveTransform.widthScale * cursorTransform.widthScale;
-			recursiveTransform.heightScale = recursiveTransform.heightScale * cursorTransform.heightScale;
-			cursor = cursor.superview;
-		}
-		this.recursiveTransform = recursiveTransform;
-	}
-
-	layoutWithRecursiveTransform() {
-		this.view.style.left = this.calculateLeft();
-		this.view.style.top = this.calculateTop();
-		this.view.style.width = this.calculateWidth();
-		this.view.style.height = this.calculateHeight();
-	}
-
-	calculateLeft() {
-		var widthDescrepency = this.calculateWidth() - this.recursiveTransform.widthScale * this.width;
-		return this.recursiveTransform.widthScale * (this.x + this.transform.x) - widthDescrepency / 2.0;
-	}
-
-	calculateTop() {
-		var heightDescrepency = this.calculateHeight() - this.recursiveTransform.heightScale * this.height;
-		return this.recursiveTransform.heightScale * (this.y + this.transform.y) - heightDescrepency/2.0;
-	}
-
-	calculateWidth() {
-		return this.width * (this.transform.widthScale * this.recursiveTransform.widthScale);
-	}
-
-	calculateHeight() {
-		return this.height * (this.transform.heightScale * this.recursiveTransform.heightScale);
-	}
 
 	updateBorder() {
 		if (this.borderWidth == 0.0) {

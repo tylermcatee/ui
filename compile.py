@@ -1,5 +1,6 @@
 import os
 import sys
+from shutil import copyfile
 
 import sys
 is_3 = sys.version_info >= (3, 0)
@@ -297,3 +298,9 @@ output.write(minified)
 output.truncate()
 output.close()
 print("Done")
+
+if len(sys.argv) > 1:
+    copy_dst = sys.argv[1]
+    print("Copying to " + copy_dst)
+    copyfile('ui.js', copy_dst)
+

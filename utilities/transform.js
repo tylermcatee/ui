@@ -32,6 +32,10 @@ class Transform {
 		transform.heightScale = this.heightScale;
 		return transform;
 	}
+
+	asString() {
+		return "matrix(" + this.widthScale + ",0.0,0.0," + this.heightScale + "," + this.x + "," + this.y +")";
+	}
 }
 
 function interpolatedTransform(min, max, percent) {
