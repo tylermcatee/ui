@@ -15,37 +15,20 @@ class MainViewController extends ViewController {
 		this.squareView.setBackgroundColor('red');
 		this.view.addSubview(this.squareView);
 
-		this.isRed = true;
-
-		var squareClickHandler = EventHandler.clickHandler(this.handleClick.bind(this));
-		this.squareView.addEventHandler(squareClickHandler);
-
 		var viewClickHandler = EventHandler.clickHandler(this.handleClick.bind(this));
 		this.view.addEventHandler(viewClickHandler);
 	}
 
 	handleClick(clickHandler) {
 		var target = clickHandler.target;
-		if (target == this.squareView) {
-			if (this.isRed) {
-			Animation.animate(target, 0.25, function(view) {
-				view.setBackgroundColor('blue');
-			});
-			this.isRed = false;
-			} else {
-				Animation.animate(target, 0.25, function(view) {
-					view.setBackgroundColor('red');
-				});
-				this.isRed = true;
-			}
-		} else {
-			var location = clickHandler.locationInView(target);	
-			Animation.animate(this.squareView, 0.25, function(view) {
-				view.setBackgroundColor('green');
-				view.setX(location.x - view.width/2.0);
-				view.setY(location.y - view.height/2.0);
-			});
-		}
+		var location = clickHandler.locationInView(target);	
+		Animation.animate(this.squareView, 0.25, function(view) {
+			view.setBackgroundColor('red');
+			view.setX(location.x - view.width/2.0);
+			view.setY(location.y - view.height/2.0);
+		}, (function() {
+			this.squareView.setBackgroundColor('green');
+		}).bind(this), Easing.easeOutCubic);
 	}
 }
 
