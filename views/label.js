@@ -26,17 +26,18 @@ var DummyLabel = (function () {
 class Label extends View {
 
 	static textSize(text, fontSize) {
-		var testDummy = textSize.testDummy || function() {
-			textSize.testDummy = document.createElement("div");
-			textSize.testDummy.style.position = 'absolute';
-			textSize.testDummy.style.top = -1000;
-			textSize.testDummy.style.left = -1000;
-			textSize.testDummy.style.height = 'auto';
-			textSize.testDummy.style.width = 'auto';
-			textSize.testDummy.style.whiteSpace = 'nowrap';
-			document.body.appendChild(textSize.testDummy);
-			return textSize.testDummy;
+		var testDummy = Label.textSize.testDummy || function() {
+			Label.textSize.testDummy = document.createElement("div");
+			Label.textSize.testDummy.style.position = 'absolute';
+			Label.textSize.testDummy.style.top = -1000;
+			Label.textSize.testDummy.style.left = -1000;
+			Label.textSize.testDummy.style.height = 'auto';
+			Label.textSize.testDummy.style.width = 'auto';
+			Label.textSize.testDummy.style.whiteSpace = 'nowrap';
+			document.body.appendChild(Label.textSize.testDummy);
+			return Label.textSize.testDummy;
 		}();
+
 		testDummy.innerHTML = text;
 		testDummy.style.fontSize = fontSize;
 		var dummyWidth = (testDummy.clientWidth + 1);
