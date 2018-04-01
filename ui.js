@@ -48,7 +48,7 @@ KEYFRAME_KEY=0;KEYFRAME_FROM=1;KEYFRAME_TO=2;Easing={linear:function(t){return t
 class Animation{static animate(view,duration,updateCallback,completion,curve,delay){if(delay==null){delay=0.0;}
 if(curve==null){curve=Easing.linear;}
 var mutatableView=view.copy();updateCallback(mutatableView);var keyframes=Animation._keyframes(view,mutatableView);if(keyframes.length==0){console.log("Animation: No keyframes detected.");return;}
-var startTime=Date.now();var finishTime=startTime+duration*1000.0;function update(){var currentTime=Date.now();var percent=fpercent(startTime,currentTime,finishTime);var timeValue=curve(percent);if(fgreater(timeValue,1.0)){for(var i=0;i<keyframes.length;i++){var keyframe=keyframes[i];view.setKeyValue(keyframe[0],keyframe[2]);}
+var startTime=Date.now()+delay*1000.0;var finishTime=startTime+duration*1000.0;function update(){var currentTime=Date.now();var percent=fpercent(startTime,currentTime,finishTime);var timeValue=curve(percent);if(fgreater(timeValue,1.0)){for(var i=0;i<keyframes.length;i++){var keyframe=keyframes[i];view.setKeyValue(keyframe[0],keyframe[2]);}
 if(completion!=null){completion();}
 return;}
 requestAnimationFrame(update);for(var i=0;i<keyframes.length;i++){var keyframe=keyframes[i];var interpolatingFunction=Animation._interpolatingFunctionForKey(keyframe[0]);var interpolatedPosition=interpolatingFunction(keyframe[KEYFRAME_FROM],keyframe[KEYFRAME_TO],timeValue);view.setKeyValue(keyframe[KEYFRAME_KEY],interpolatedPosition);}}

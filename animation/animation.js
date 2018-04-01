@@ -57,7 +57,7 @@ class Animation {
 			return;
 		}
 
-		var startTime = Date.now();
+		var startTime = Date.now() + delay * 1000.0;
 		var finishTime = startTime + duration * 1000.0;
 
 		function update() {
