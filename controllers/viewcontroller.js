@@ -16,11 +16,17 @@ class ViewController {
 
 	viewDidAppear() {
 		// Called once the view is visible on screen.
+		document.title = this.title;
 		return;
 	}
 
 	windowDidResize() {
 		// Called whenever the window resizes
 		return;
+	}
+
+	setTitle(title) {
+		this.title = title;
+		document.title = title;
 	}
 }
