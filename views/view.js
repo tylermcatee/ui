@@ -35,6 +35,7 @@ class View {
 		this.setBorderRadius(0.0);
 		this.setBorderColor('');
 		this.setOpacity(1.0);
+		this.setOverflow('visible');
 
 		this.borderColor = 'black';
 		this.setBorderWidth(0.0);
@@ -59,6 +60,7 @@ class View {
 		copyView.setBackgroundColor(this.backgroundColor);
 		copyView.setBorderRadius(this.borderRadius);
 		copyView.setOpacity(this.opacity);
+		copyView.setOverflow(this.overflow);
 		copyView.setBorderWidth(this.borderWidth);
 		copyView.setBorderColor(this.borderColor);
 	}
@@ -203,6 +205,12 @@ class View {
 		if (opacity == 0.0) {
 			this.view.style.pointerEvents = "none";
 		}
+	}
+
+	setOverflow(overflow) {
+		this.overflow = overflow;
+		this.view.style.overflow = overflow;
+		console.log("Set overflow to ", overflow);
 	}
 
 	setBorderWidth(borderWidth) {

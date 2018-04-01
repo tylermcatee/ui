@@ -22,9 +22,9 @@ copy(){var transform=new Transform();transform.x=this.x;transform.y=this.y;trans
 asString(){return"matrix("+this.widthScale+",0.0,0.0,"+this.heightScale+","+this.x+","+this.y+")";}}
 function interpolatedTransform(min,max,percent){var x=flerp(min.x,max.x,percent);var y=flerp(min.y,max.y,percent);var widthScale=flerp(min.widthScale,max.widthScale,percent);var heightScale=flerp(min.heightScale,max.heightScale,percent);var transform=new Transform();transform.x=x;transform.y=y;transform.widthScale=widthScale;transform.heightScale=heightScale;return transform;}
 class View{static viewWithFrame(x,y,width,height){var newView=new View();newView.init();newView.setX(x);newView.setY(y);newView.setWidth(width);newView.setHeight(height);return newView;}
-init(){this.view=document.createElement('div');this.view.id=Date.now();this.superview=null;this.subviews=[];this.setTransform(Transform.identity());this.setPosition('absolute');this.setX(0.0);this.setY(0.0);this.setWidth(0.0);this.setHeight(0.0);this.setBackgroundColor('');this.setBorderRadius(0.0);this.setBorderColor('');this.setOpacity(1.0);this.borderColor='black';this.setBorderWidth(0.0);this.eventListeners={};}
+init(){this.view=document.createElement('div');this.view.id=Date.now();this.superview=null;this.subviews=[];this.setTransform(Transform.identity());this.setPosition('absolute');this.setX(0.0);this.setY(0.0);this.setWidth(0.0);this.setHeight(0.0);this.setBackgroundColor('');this.setBorderRadius(0.0);this.setBorderColor('');this.setOpacity(1.0);this.setOverflow('visible');this.borderColor='black';this.setBorderWidth(0.0);this.eventListeners={};}
 copy(){var copyView=View.viewWithFrame(this.x,this.y,this.width,this.height);this.copyParams(copyView);return copyView;}
-copyParams(copyView){copyView.setTransform(this.transform);copyView.setBackgroundColor(this.backgroundColor);copyView.setBorderRadius(this.borderRadius);copyView.setOpacity(this.opacity);copyView.setBorderWidth(this.borderWidth);copyView.setBorderColor(this.borderColor);}
+copyParams(copyView){copyView.setTransform(this.transform);copyView.setBackgroundColor(this.backgroundColor);copyView.setBorderRadius(this.borderRadius);copyView.setOpacity(this.opacity);copyView.setOverflow(this.overflow);copyView.setBorderWidth(this.borderWidth);copyView.setBorderColor(this.borderColor);}
 embedIn(element){element.appendChild(this.view);}
 addSubview(view){this.view.appendChild(view.view);view.superview=this;this.subviews.push(view);}
 removeFromSuperview(){this.view.parentNode.removeChild(this.view);var indexOfSelfInParentsSubviews=this.superview.subviews.indexOf(this);console.log(this.superview.subviews);this.superview.subviews.splice(indexOfSelfInParentsSubviews,1);this.view.superview=null;}
@@ -41,6 +41,7 @@ setHeight(height){this.height=height;this.view.style.height=height;}
 setBackgroundColor(color){this.backgroundColor=color;this.view.style.background=color;}
 setBorderRadius(radius){this.borderRadius=radius;this.view.style.borderRadius=radius;}
 setOpacity(opacity){this.opacity=opacity;this.view.style.opacity=opacity;if(opacity==0.0){this.view.style.pointerEvents="none";}}
+setOverflow(overflow){this.overflow=overflow;this.view.style.overflow=overflow;console.log("Set overflow to ",overflow);}
 setBorderWidth(borderWidth){this.borderWidth=borderWidth;this.updateBorder();}
 setBorderColor(borderColor){this.borderColor=borderColor;this.updateBorder();}
 updateBorder(){if(this.borderWidth==0.0){this.view.style.border='none';}else{this.view.style.border=this.borderWidth+"px solid "+this.borderColor;}}}
@@ -75,6 +76,8 @@ setContainee(containee){this.containee=containee;}
 layoutContainee(){this.rootViewController.view.setWidth(document.body.clientWidth);this.rootViewController.view.setHeight(document.body.clientHeight);this.rootViewController.view.setX(0.0);this.rootViewController.view.setY(0.0);this.rootViewController.windowDidResize();}
 load(){this.rootViewController.viewDidAppear();}
 setRootViewController(viewController){viewController.view.embedIn(this.containee);this.rootViewController=viewController;window.addEventListener("resize",this.layoutContainee.bind(this));window.onload=this.load.bind(this);this.layoutContainee();}}
+class ScrollView extends View{static viewWithFrame(x,y,width,height){var view=new ScrollView();view.init();view.setX(x);view.setY(y);view.setWidth(width);view.setHeight(height);return view;}
+init(){super.init();}}
 var DummyLabel=(function(){var instance;function createInstance(){var testDummy=document.createElement("div");testDummy.style.position='absolute';testDummy.style.top=-1000;testDummy.style.left=-1000;testDummy.style.height='auto';testDummy.style.width='auto';testDummy.style.whiteSpace='none';document.body.appendChild(testDummy);return testDummy;}
 return{getInstance:function(){if(!instance){instance=createInstance();}
 return instance;}};})();class Label extends View{static textSize(text,fontSize){var testDummy=Label.textSize.testDummy||function(){Label.textSize.testDummy=document.createElement("div");Label.textSize.testDummy.style.position='absolute';Label.textSize.testDummy.style.top=-1000;Label.textSize.testDummy.style.left=-1000;Label.textSize.testDummy.style.height='auto';Label.textSize.testDummy.style.width='auto';Label.textSize.testDummy.style.whiteSpace='nowrap';document.body.appendChild(Label.textSize.testDummy);return Label.textSize.testDummy;}();testDummy.innerHTML=text;testDummy.style.fontSize=fontSize;var dummyWidth=(testDummy.clientWidth+1);var dummyHeight=(testDummy.clientHeight+1);return{'width':dummyWidth,'height':dummyHeight};}
