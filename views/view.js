@@ -200,6 +200,9 @@ class View {
 	setOpacity(opacity) {
 		this.opacity = opacity;
 		this.view.style.opacity = opacity;
+		if (opacity == 0.0) {
+			this.view.style.pointerEvents = "none";
+		}
 	}
 
 	setBorderWidth(borderWidth) {

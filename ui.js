@@ -40,7 +40,7 @@ setWidth(width){this.width=width;this.view.style.width=width;}
 setHeight(height){this.height=height;this.view.style.height=height;}
 setBackgroundColor(color){this.backgroundColor=color;this.view.style.background=color;}
 setBorderRadius(radius){this.borderRadius=radius;this.view.style.borderRadius=radius;}
-setOpacity(opacity){this.opacity=opacity;this.view.style.opacity=opacity;}
+setOpacity(opacity){this.opacity=opacity;this.view.style.opacity=opacity;if(opacity==0.0){this.view.style.pointerEvents="none";}}
 setBorderWidth(borderWidth){this.borderWidth=borderWidth;this.updateBorder();}
 setBorderColor(borderColor){this.borderColor=borderColor;this.updateBorder();}
 updateBorder(){if(this.borderWidth==0.0){this.view.style.border='none';}else{this.view.style.border=this.borderWidth+"px solid "+this.borderColor;}}}
